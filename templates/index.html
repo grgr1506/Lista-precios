@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLI | Lista de Precios</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --primary-color: #524e9c;
+            --accent-color: #635dbd;  
+            --bg-color: #f8f9fa;      
+            --white-pure: #ffffff;
+            --text-dark: #2b2b36;
+            --text-light: #6b7280;
+        }
+
+        body { background-color: var(--bg-color); font-family: 'Inter', sans-serif; color: var(--text-dark); }
+        .text-brand { color: var(--primary-color) !important; }
+        .bg-brand { background-color: var(--primary-color) !important; color: white; }
+        
+        .btn-outline-brand { color: var(--primary-color); border: 2px solid var(--primary-color); background: transparent; }
+        .btn-outline-brand:hover { background: var(--primary-color); color: white; }
+
+        .navbar { background-color: var(--white-pure); box-shadow: 0 2px 10px rgba(82, 78, 156, 0.08); padding: 1rem 0; }
+        .brand-logo { font-weight: 800; font-size: 1.5rem; color: var(--primary-color); letter-spacing: -0.5px; }
+        .brand-subtitle { font-size: 0.75rem; color: var(--text-light); font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; }
+
+        .card-pro { background: var(--white-pure); border: none; border-radius: 12px; box-shadow: 0 4px 15px rgba(82, 78, 156, 0.05); transition: all 0.3s ease; }
+        .upload-box { border: 2px dashed #e5e7eb; border-radius: 12px; padding: 2rem; text-align: center; transition: 0.2s; cursor: pointer; background: var(--white-pure); }
+        .upload-box:hover { border-color: var(--accent-color); background-color: rgba(82, 78, 156, 0.02); }
+
+        .search-container { position: relative; max-width: 700px; margin: 0 auto; }
+        .search-input { border: 1px solid #e5e7eb; border-radius: 50px; padding: 1.2rem 1.5rem 1.2rem 3.5rem; font-size: 1.1rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); transition: all 0.2s; background: var(--white-pure); }
+        .search-input:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 4px rgba(82, 78, 156, 0.15); }
+        .search-icon { position: absolute; left: 25px; top: 50%; transform: translateY(-50%); color: var(--primary-color); font-size: 1.3rem; }
+
+        .table-container { border-radius: 12px; overflow: hidden; background: var(--white-pure); box-shadow: 0 10px 30px rgba(82, 78, 156, 0.06); }
+        .table-pro thead { background-color: var(--primary-color); }
+        .table-pro th { color: white; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; border: none; padding: 1.2rem 1.5rem; }
+        .table-pro td { padding: 1.25rem 1.5rem; vertical-align: middle; border-bottom: 1px solid #f0f0f5; color: var(--text-dark); font-size: 0.95rem; }
+        
+        .price-tag { font-family: 'Inter', sans-serif; font-weight: 700; color: var(--primary-color); font-size: 1.15rem; }
+        .price-secondary { color: #6b7280; font-weight: 600; }
+
+        .btn-edit-margen { background: rgba(82, 78, 156, 0.08); color: var(--primary-color); border: 1px solid rgba(82, 78, 156, 0.2); padding: 5px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; transition: 0.2s; cursor: pointer; }
+        .btn-edit-margen:hover { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .badge-mode { background: rgba(82, 78, 156, 0.1); color: var(--primary-color); padding: 6px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; border: 1px solid rgba(82, 78, 156, 0.2); }
+        
+        .sede-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; opacity: 0.7; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar sticky-top">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+            <div class="bg-brand rounded-3 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                <i class="bi bi-box-seam fs-4"></i>
+            </div>
+            <div style="line-height: 1.1;">
+                <div class="brand-logo">GLI</div>
+                <div class="brand-subtitle">Lista de Precios</div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-3 align-items-center">
+            <span class="badge-mode"><i class="bi bi-currency-dollar me-1"></i> Precios en USD</span>
+            <button class="btn btn-outline-brand rounded-pill px-4 fw-bold" onclick="toggleAdmin()">
+                <i class="bi bi-gear-fill me-2"></i>Configurar Data
+            </button>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-5">
+
+    <div id="adminPanel" class="mb-5" style="display:none;">
+        <div class="card-pro p-4 border-top border-4 border-brand">
+            <div class="d-flex justify-content-between mb-4">
+                <h5 class="fw-bold text-dark"><i class="bi bi-sliders me-2 text-brand"></i>Panel de Configuración</h5>
+                <button class="btn-close" onclick="toggleAdmin()"></button>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="upload-box" onclick="document.getElementById('fileCostos').click()">
+                        <div class="mb-3 text-brand"><i class="bi bi-database-check fs-1"></i></div>
+                        <h6 class="fw-bold">1. Subir Costos Base ($)</h6>
+                        <p class="text-muted small mb-0">Importar Archivo exportado de Odoo</p>
+                        <input type="file" id="fileCostos" class="d-none" accept=".xlsx, .csv" onchange="subirArchivo('subir-precios', 'fileCostos')">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="upload-box" onclick="document.getElementById('fileReglas').click()">
+                        <div class="mb-3 text-warning"><i class="bi bi-file-earmark-spreadsheet fs-1"></i></div>
+                        <h6 class="fw-bold">2. Subir Reglas Maestras</h6>
+                        <p class="text-muted small mb-0">Importar Excel de Márgenes y Excepciones</p>
+                        <input type="file" id="fileReglas" class="d-none" accept=".xlsx, .csv" onchange="subirArchivo('subir-reglas', 'fileReglas')">
+                    </div>
+                </div>
+            </div>
+            <div id="status" class="text-center mt-3 fw-bold small text-brand"></div>
+        </div>
+    </div>
+
+    <div class="text-center mb-5 mt-3">
+        <h2 class="fw-bold mb-4 text-dark" style="letter-spacing: -0.5px;">Búsqueda Inteligente</h2>
+        <div class="search-container">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" id="txtBuscar" class="form-control search-input" placeholder="Escribe el nombre de un insumo, código o categoría..." onkeyup="buscar()">
+        </div>
+    </div>
+
+    <div class="table-container shadow-sm">
+        <table class="table table-pro mb-0 w-100">
+            <thead>
+                <tr>
+                    <th style="width: 45%; padding-left: 2rem;">Producto Detallado</th>
+                    <th class="text-center">Margen</th>
+                    <th class="text-end">Precio Lima</th>
+                    <th class="text-end">Precio Arequipa</th>
+                    <th class="text-end" style="padding-right: 2rem;">Precio Trujillo</th>
+                </tr>
+            </thead>
+            <tbody id="tablaResultados">
+                </tbody>
+        </table>
+        
+        <div id="loading" class="text-center py-5" style="display:none;">
+            <div class="spinner-border text-brand" style="width: 3rem; height: 3rem;"></div>
+            <p class="text-muted mt-3 small fw-bold">Calculando y filtrando productos...</p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const API = "http://127.0.0.1:5000";
+    let timerBusqueda;
+
+    // Cargar la lista completa al inicio
+    document.addEventListener('DOMContentLoaded', () => { ejecutarBusqueda(); });
+
+    function toggleAdmin() { 
+        const panel = document.getElementById('adminPanel');
+        if(panel.style.display === 'none') {
+            panel.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            panel.style.display = 'none';
+        }
+    }
+
+    // Búsqueda instantánea con 300ms de gracia
+    function buscar() {
+        clearTimeout(timerBusqueda);
+        const loader = document.getElementById('loading');
+        const tbody = document.getElementById('tablaResultados');
+        
+        tbody.innerHTML = ''; 
+        loader.style.display = 'block';
+
+        timerBusqueda = setTimeout(() => {
+            ejecutarBusqueda();
+        }, 300);
+    }
+
+    async function ejecutarBusqueda() {
+        const q = document.getElementById('txtBuscar').value.trim();
+        const tbody = document.getElementById('tablaResultados');
+        const loader = document.getElementById('loading');
+        
+        try {
+            const res = await fetch(`${API}/buscar?q=${encodeURIComponent(q)}`);
+            const data = await res.json();
+            loader.style.display = 'none';
+
+            if(data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted fw-bold">No encontramos productos que coincidan.</td></tr>';
+                return;
+            }
+
+            let htmlContent = '';
+            
+            data.forEach(p => {
+                let badgeFlete = p.flete_status === 'NO' 
+                    ? '<span class="badge text-dark rounded-pill" style="background:#e0f2fe; font-size:0.65rem; border: 1px solid #bae6fd;">FLETE GRATIS</span>' 
+                    : '';
+                
+                let marca = p.marca && p.marca !== 'NAN' ? p.marca : 'Genérico';
+                let codigo = p.codigo && p.codigo !== 'NAN' ? p.codigo : 'S/C';
+                let categoria = p.categoria && p.categoria !== 'NAN' ? p.categoria : 'Otros';
+
+                htmlContent += `
+                <tr>
+                    <td style="padding-left: 2rem;">
+                        <div class="fw-bold text-dark" style="font-size: 1.05rem;">${p.nombre}</div>
+                        <div class="d-flex align-items-center mt-2 flex-wrap gap-2">
+                            <span class="badge" style="background-color: rgba(82, 78, 156, 0.1); color: var(--primary-color); border: 1px solid var(--primary-color);">
+                                <i class="bi bi-folder2-open"></i> ${categoria}
+                            </span>
+                            <span class="badge bg-light text-secondary border"><i class="bi bi-upc-scan"></i> ${codigo}</span>
+                            <span class="badge bg-light text-secondary border"><i class="bi bi-tag"></i> ${marca}</span>
+                            <span class="badge bg-light text-secondary border"><i class="bi bi-box-seam"></i> ${p.presentacion} ${p.unidad_tipo}</span>
+                            ${badgeFlete}
+                        </div>
+                    </td>
+                    
+                    <td class="text-center">
+                        <button class="btn-edit-margen" onclick="editarMargen('${p.nombre}', '${p.margen}')" title="Clic para editar margen de ganancia">
+                            ${p.margen}% <i class="bi bi-pencil-fill ms-1" style="font-size: 0.7rem;"></i>
+                        </button>
+                    </td>
+
+                    <td class="text-end">
+                        <div class="price-tag">$ ${p.precio_lima.toFixed(2)}</div>
+                        <div class="text-muted sede-label">LIMA (USD)</div>
+                    </td>
+
+                    <td class="text-end">
+                        <div class="price-tag price-secondary">$ ${p.precio_aqp.toFixed(2)}</div>
+                        <div class="text-muted sede-label">AREQUIPA (USD)</div>
+                    </td>
+
+                    <td class="text-end" style="padding-right: 2rem;">
+                        <div class="price-tag price-secondary">$ ${p.precio_tru.toFixed(2)}</div>
+                        <div class="text-muted sede-label">TRUJILLO (USD)</div>
+                    </td>
+                </tr>`;
+            });
+            
+            tbody.innerHTML = htmlContent;
+            
+        } catch(e) { loader.style.display = 'none'; }
+    }
+
+    async function editarMargen(nombre, val) {
+        let nuevo = prompt(`Editar margen de ganancia para:\n${nombre}\n\nIngresa el porcentaje (ej: 25):`, val);
+        if(nuevo && !isNaN(nuevo)) {
+            await fetch(`${API}/api/editar-margen`, {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({nombre: nombre, margen: nuevo})
+            });
+            ejecutarBusqueda(); 
+        }
+    }
+
+    async function subirArchivo(endpoint, id) {
+        let input = document.getElementById(id);
+        if(!input.files[0]) return;
+        let fd = new FormData(); 
+        fd.append('archivo', input.files[0]);
+        document.getElementById('status').innerText = "Procesando data...";
+        try {
+            await fetch(`${API}/${endpoint}`, {method:'POST', body:fd});
+            document.getElementById('status').innerText = "✅ Sistema actualizado en memoria";
+            setTimeout(() => { document.getElementById('status').innerText=''; }, 3000);
+            ejecutarBusqueda();
+        } catch(e) {
+            document.getElementById('status').innerText = "❌ Error al subir";
+        }
+    }
+</script>
+
+</body>
+</html>
