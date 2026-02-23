@@ -15,29 +15,592 @@ FILE_REGLAS = "data_reglas.xlsx"
 FILE_DB_MANUAL = "db_manual.json"     
 
 # =========================================================
-# 📘 DICCIONARIOS DE TARIFAS (Tu Panel de Control Interno)
+# 📘 DICCIONARIOS DE TARIFAS OFICIALES GLI
 # =========================================================
 MARGEN_DEFECTO = 0.20
 
-# 1. Diccionario de Envases (USD)
 TARIFAS_ENVASE = {
-    "GALONERA": 0.50,
-    "BOLSA": 0.15,
-    "FRASCO": 0.30,
-    "NINGUNO": 0.0
+    "GALONERA": 0.88, "FRASCO 1L": 0.35, "FRASCO 500ML": 0.26, 
+    "FRASCO 250ML": 0.21, "FRASCO 120ML": 0.14, "BALDE 25KG": 4.60,      
+    "CAJA CHICA": 1.08, "CAJA GRANDE": 1.12, "BOLSA FLEXO": 0.26, "NINGUNO": 0.0
 }
-COSTO_ENVASE_STD_1KG = 0.15  
-COSTO_ENVASE_STD_5KG = 0.40  
+COSTO_ENVASE_STD_1KG = 0.26  
+COSTO_ENVASE_STD_5KG = 0.88  
 
-# 2. Diccionario de Fletes (USD por Kg)
 TARIFAS_FLETE = {
-    "F1": 0.08,   # Flete Estándar
-    "F2": 0.15,   # Flete Especial/Largo
-    "F0": 0.00    # Flete Gratis (Puesto en provincia)
+    "FLETE LIM-AQP/TRUJ X KG": 0.08,   
+    "FLETE AQP/LIMA X KG": 0.15,   
+    "NINGUNO": 0.00    
 }
-
-# 3. Penalidad por Material Peligroso
 RECARGO_PELIGROSO = 0.03  
+
+# =========================================================
+# 🏭 MAPEO ESTRICTO DE PROVEEDORES
+# =========================================================
+TEXTO_PROVEEDORES = """
+[ALITECNO]
+SAL DE CURA CONCENTRADA TECNAS X 25kg
+SAL DE CURA CONCENTRADA TECNAS X 5kg
+SAL DE CURA CONCENTRADA TECNAS X 1kg
+
+[CRAMER]
+CREMA CHIRIMOYA 850019 CRAMER X 4kg
+CREMA CHOCOLATE SUIZO 1528519 CRAMER X 5kg
+CREMA COCO 1090719 CRAMER X 5kg
+CREMA FRAMBUESA 1073619 CRAMER X 4kg
+CREMA FRESA 2503719 CRAMER X 4kg
+CREMA LUCUMA 457919 CRAMER X 4kg
+CREMA MANJAR 1587519 CRAMER X 4kg
+CREMA MANJAR NUECES 1091019 CRAMER X 4kg
+CREMA MENTA 1096619 CRAMER X 4kg
+CREMA MORA 1090519 CRAMER X 4kg
+CREMA NOUGAT 1516019 CRAMER X 4kg
+CREMA PASAS AL RON 1091319 CRAMER X 4kg
+CREMA PIE DE LIMON 1050119 CRAMER X 5kg
+CREMA TIRAMISU 1096319 CRAMER X 4kg
+CREMA TRUFA 1555619 CRAMER X 4kg
+ENTURBIANTE LIQUIDO FE1490-00 CRAMER X 5kg
+ENTURBIANTE LIQUIDO FE1490-00 CRAMER X 1kg
+ENTURBIANTE NEUTRO PLUS 4E089500 CRAMER X 5kg
+ENTURBIANTE EN POLVO PE1910-48 CRAMER X 20kg
+ENTURBIANTE EN POLVO PE1910-48 CRAMER X 1kg
+ESENCIA AGUARDIENTE DE UVA 2P696500 CRAMER X 5kg
+ESENCIA AGUARDIENTE DE UVA 2P696500 CRAMER X 1kg
+ESENCIA AGUARDIENTE DE UVA 2P696500 CRAMER X 250g
+ESENCIA ALGARROBINA P40734000 CRAMER X 5kg
+ESENCIA ALMENDRA 2A387800 CRAMER X 5kg
+ESENCIA ALMENDRA 2A387800 CRAMER X 1kg
+ESENCIA AGUAYMANTO PE336000 CRAMER X 5kg
+ESENCIA AGUAYMANTO PE336000 CRAMER X 1kg
+ESENCIA AGUAYMANTO PE336000 CRAMER X 250g
+ESENCIA ANIS 2A036100 CRAMER X 5kg
+ESENCIA ANIS 2A036100 CRAMER X 1kg
+ESENCIA ANIS 2A036100 CRAMER X 250g
+ESENCIA ANIS FA599200 CRAMER X 1kg
+ESENCIA ANIS FA599200 CRAMER X 250g
+ESENCIA ARANDANO 3A611300 CRAMER X 5kg
+ESENCIA ARANDANO 3A611300 CRAMER X 1kg
+ESENCIA ARANDANO 3A611300 CRAMER X 250g
+ESENCIA ARANDANO 3A611300 CRAMER X 100g
+ESENCIA AREQUIPE 2L404900 CRAMER X 5kg
+ESENCIA AREQUIPE 2L404900 CRAMER X 1kg
+ESENCIA TIPO BAILEYS FB915100 CRAMER X 5kg
+ESENCIA TIPO BAILEYS FB915100 CRAMER X 1kg
+ESENCIA CAFE MOKA 977915 CRAMER X 5kg
+ESENCIA CAFE MOKA 977915 CRAMER X 1kg
+ESENCIA CAFE MOKA 977915 CRAMER X 250g
+ESENCIA CANELA PE376500 CRAMER X 5kg
+ESENCIA CAPUCCINO SABOR C4748300 CRAMER X 5kg
+ESENCIA CAPUCCINO SABOR C4748300 CRAMER X 1kg
+ESENCIA CAPUCCINO SABOR C4748300 CRAMER X 250g
+ESENCIA CAPUCCINO SABOR C4748300 CRAMER X 100g
+ESENCIA CEREZA FC555600 CRAMER X 5kg
+ESENCIA CHAMPAGNE FC125100 CRAMER X 5kg
+ESENCIA CHICHA MORADA P4153600 CRAMER X 5kg
+ESENCIA CHICHA MORADA P4153600 CRAMER X 1kg
+ESENCIA CHICHA MORADA P4153600 CRAMER X 250g
+ESENCIA CHIRIMOYA FC52900 CRAMER X 5kg
+ESENCIA CHIRIMOYA FC52900 CRAMER X 1kg
+ESENCIA CHIRIMOYA FC52900 CRAMER X 250g
+ESENCIA CHIRIMOYA FC599800 CRAMER X 5kg
+ESENCIA CHIRIMOYA FC599800 CRAMER X 1kg
+ESENCIA CHIRIMOYA FC599800 CRAMER X 250g
+ESENCIA CHOCOLATE FC349300 CRAMER X 5kg
+ESENCIA CHOCOLATE FC349300 CRAMER X 1kg
+ESENCIA CHOCOLATE FC785200 CRAMER X 5kg
+ESENCIA CHOCOLATE FC785200 CRAMER X 1kg
+ESENCIA CHOCOLATE FC785200 CRAMER X 250g
+ESENCIA CHOCOLATE FC889900 CRAMER X 5kg
+ESENCIA CHOCOLATE FC889900 CRAMER X 1kg
+ESENCIA CIRUELA 2C202700 CRAMER X 1kg
+ESENCIA CITRUS PUNCH 2C738700 CRAMER X 5kg
+ESENCIA CITRUS PUNCH 2C738700 CRAMER X 1kg
+ESENCIA CITRUS PUNCH 2C738700 CRAMER X 250g
+ESENCIA COCO 2C510700 CRAMER X 5kg
+ESENCIA COCO 2C510700 CRAMER X 1kg
+ESENCIA COCO 2C510700 CRAMER X 250g
+ESENCIA COCO FC918300 CRAMER X 5kg
+ESENCIA COCO FC918300 CRAMER X 1kg
+ESENCIA COCO FC918300 CRAMER X 250g
+ESENCIA COCO MAITAI FC277600 CRAMER X 1kg
+ESENCIA COLA AMARILLA PE341100 CRAMER X 5kg
+ESENCIA COLA AMARILLA PE341100 CRAMER X 1kg
+ESENCIA COLA AMARILLA PE341100 CRAMER X 250g
+ESENCIA COLA NEGRA FC448900 CRAMER X 5kg
+ESENCIA COLA NEGRA FC448900 CRAMER X 1kg
+ESENCIA COLA ROJA 3C513000 CRAMER X 1kg
+ESENCIA CRANBERRY 3C820800 CRAMER X 5kg
+ESENCIA CREMA DE COCO P4077700 CRAMER X 5kg
+ESENCIA CREMA DE LECHE P4076000 CRAMER X 5kg
+ESENCIA CREMA SUIZA FC809000 CRAMER X 1kg
+ESENCIA DULCE DE LECHE 3D435300 CRAMER X 5kg
+ESENCIA DULCE DE LECHE 3D435300 CRAMER X 1kg
+ESENCIA DULCE DE LECHE 3D435300 CRAMER X 250g
+ESENCIA DURAZNO FD622800 CRAMER X 5kg
+ESENCIA DURAZNO FD622800 CRAMER X 1kg
+ESENCIA DURAZNO FD622800 CRAMER X 250g
+ESENCIA DURAZNO 2D663400 CRAMER X 5kg
+ESENCIA DURAZNO 2D663400 CRAMER X 1kg
+ESENCIA DURAZNO 2D663400 CRAMER X 250g
+ESENCIA DURAZNO FD885600 CRAMER X 5kg
+ESENCIA DURAZNO FD885600 CRAMER X 1kg
+ESENCIA DURAZNO FD885600 CRAMER X 250g
+ESENCIA FRAMBUESA FF03900 CRAMER X 5kg
+ESENCIA FRAMBUESA FF03900 CRAMER X 1kg
+ESENCIA FRAMBUESA FF03900 CRAMER X 250g
+ESENCIA FRESA FF06600L LINROS X 5kg
+ESENCIA FRESA FF06600L LINROS X 1kg
+ESENCIA FRESA FF06600L LINROS X 250g
+ESENCIA FRESA FF09400 CRAMER X 5kg
+ESENCIA FRESA FF09400 CRAMER X 1kg
+ESENCIA FRESA FF09400 CRAMER X 250g
+ESENCIA FRESA FF587500 CRAMER X 5kg
+ESENCIA FRESA FF587500 CRAMER X 1kg
+ESENCIA FRESA FF587500 CRAMER X 250g
+ESENCIA FRESA FF587500 CRAMER X 100g
+ESENCIA FRESA FF920500 CRAMER X 5kg
+ESENCIA FRESA FF920500 CRAMER X 1kg
+ESENCIA FRESA FF920500 CRAMER X 250g
+ESENCIA FRUTOS ROJOS SABOR F0400400 CRAMER X 5kg
+ESENCIA FRUTOS ROJOS SABOR F0400400 CRAMER X 1kg
+ESENCIA FRUTOS ROJOS SABOR F0400400 CRAMER X 250g
+ESENCIA FRUTOS ROJOS SABOR F0400400 CRAMER X 100g
+ESENCIA GRANADILLA 2G480900 CRAMER X 5kg
+ESENCIA GRANADILLA 2G480900 CRAMER X 1kg
+ESENCIA GUANABANA FG914600 CRAMER X 5kg
+ESENCIA GUANABANA FG914600 CRAMER X 1kg
+ESENCIA GUANABANA FG914600 CRAMER X 250g
+ESENCIA GUARANA 2G917300 CRAMER X 5kg
+ESENCIA GUARANA SABOR G4226200 CRAMER X 5kg
+ESENCIA GUAYABA FG183500 CRAMER X 5kg
+ESENCIA GUAYABA FG183500 CRAMER X 1kg
+ESENCIA GUAYABA FG183500 CRAMER X 250g
+ESENCIA GUAYABA FG183500 CRAMER X 100g
+ESENCIA HIGOS FH281400 CRAMER X 5kg
+ESENCIA HUMO LIQUIDO 1038526 CRAMER X 5kg
+ESENCIA HUMO LIQUIDO 1038526 CRAMER X 1kg
+ESENCIA IRISH CREAM FI858800 CRAMER X 5kg
+ESENCIA IRISH CREAM FI858800 CRAMER X 1kg
+ESENCIA LECHE CONDENSADA PE362700 CRAMER X 5kg
+ESENCIA LECHE CONDENSADA PE362700 CRAMER X 1kg
+ESENCIA LECHE CONDENSADA PE362700 CRAMER X 250g
+ESENCIA LIMA LIMON FL430100 CRAMER X 5kg
+ESENCIA LIMA LIMON FL430100 CRAMER X 1kg
+ESENCIA LIMA LIMON FL430100 CRAMER X 250g
+ESENCIA LIMA LIMON SABOR 3L148400 CRAMER X 5kg
+ESENCIA LIMON FL201400 CRAMER X 5kg
+ESENCIA LIMON FL201400 CRAMER X 1kg
+ESENCIA LIMON FL201400 CRAMER X 250g
+ESENCIA LIMON FL201400 CRAMER X 100g
+ESENCIA LUCUMA FL108600 CRAMER X 5kg
+ESENCIA LUCUMA FL108600 CRAMER X 1kg
+ESENCIA LUCUMA FL108600 CRAMER X 250g
+ESENCIA LUCUMA FL798300 CRAMER X 5kg
+ESENCIA LUCUMA FL798300 CRAMER X 1kg
+ESENCIA LUCUMA FL798300 CRAMER X 250g
+ESENCIA MANDARINA PE311200 CRAMER X 5kg
+ESENCIA MANDARINA PE311200 CRAMER X 1kg
+ESENCIA MANDARINA PE311200 CRAMER X 250g
+ESENCIA MANGO FM840900 CRAMER X 5kg
+ESENCIA MANGO FM840900 CRAMER X 1kg
+ESENCIA MANGO FM840900 CRAMER X 250g
+ESENCIA MANGO FM840900 CRAMER X 100g
+ESENCIA MANJAR FM387000 CRAMER X 5kg
+ESENCIA MANJAR FM387000 CRAMER X 1kg
+ESENCIA MANTEQUILLA FM599500 CRAMER X 1kg
+ESENCIA MANTEQUILLA SABOR M5488000 CRAMER X 1kg
+ESENCIA MANZANA PE308300 CRAMER X 5kg
+ESENCIA MANZANA PE308300 CRAMER X 1kg
+ESENCIA MANZANA PE308300 CRAMER X 250g
+ESENCIA MANZANA VERDE 2M573500 CRAMER X 5kg
+ESENCIA MANZANA VERDE 2M573500 CRAMER X 1kg
+ESENCIA MARACUYA 2M158900 CRAMER X 5kg
+ESENCIA MARACUYA 2M158900 CRAMER X 1kg
+ESENCIA MARACUYA 2M158900 CRAMER X 250g
+ESENCIA MARACUYA FM716700 CRAMER X 5kg
+ESENCIA MARACUYA FM716700 CRAMER X 1kg
+ESENCIA MARACUYA FM716700 CRAMER X 250g
+ESENCIA MARACUYA FM716700 CRAMER X 100g
+ESENCIA MEMBRILLO FM590700 CRAMER X 5kg
+ESENCIA MENTA 2M309600 CRAMER X 5kg
+ESENCIA MENTA 2M309600 CRAMER X 1kg
+ESENCIA MENTA 2M309600 CRAMER X 250g
+ESENCIA MENTA 2M309600 CRAMER X 100g
+ESENCIA MENTA FM622300 CRAMER X 5kg
+ESENCIA MENTA FM622300 CRAMER X 1kg
+ESENCIA MENTA FM622300 CRAMER X 250g
+ESENCIA MENTA FM622300 CRAMER X 100g
+ESENCIA MIEL 2M427700 CRAMER X 1kg
+ESENCIA MORA 387001 CRAMER X 5kg
+ESENCIA MORA 387001 CRAMER X 1kg
+ESENCIA MORA 387001 CRAMER X 250g
+ESENCIA MOSTAZA 2M230800 CRAMER X 5kg
+ESENCIA NARANJA FN07000 CRAMER X 5kg
+ESENCIA NARANJA FN07000 CRAMER X 1kg
+ESENCIA NARANJA FN07000 CRAMER X 250g
+ESENCIA NARANJA FN07000 CRAMER X 100g
+ESENCIA NARANJA FN48900 CRAMER X 5kg
+ESENCIA NARANJA FN48900 CRAMER X 1kg
+ESENCIA NARANJA FN48900 CRAMER X 250g
+ESENCIA NARANJA FN48900 CRAMER X 100g
+ESENCIA NARANJA N8027900 CRAMER X 1kg
+ESENCIA NARANJA N8027900 CRAMER X 250g
+ESENCIA NARANJA TURBIA 2N331800 CRAMER X 5kg
+ESENCIA NARANJA TURBIA 2N331800 CRAMER X 1kg
+ESENCIA OREGANO SOLUBLE 1004500 CRAMER X 5kg
+ESENCIA PANETON FP516504 CRAMER X 5kg
+ESENCIA PANETON FP516504 CRAMER X 1kg
+ESENCIA PANETON FP516504 CRAMER X 250g
+ESENCIA PANETON SABOR P8241600 CRAMER X 5kg
+ESENCIA PANETON SABOR P8241600 CRAMER X 1kg
+ESENCIA PANETON SABOR P8241600 CRAMER X 250g
+ESENCIA PAPAYA AREQUIPEÑA P4234200 CRAMER X 5kg
+ESENCIA PAPAYA AREQUIPEÑA P4234200 CRAMER X 1kg
+ESENCIA PAPAYA AREQUIPEÑA P4234200 CRAMER X 250g
+ESENCIA PAPAYA AREQUIPEÑA P4234200 CRAMER X 100g
+ESENCIA PASAS AL RON FR47500 CRAMER X 5kg
+ESENCIA PASAS AL RON FR47500 CRAMER X 1kg
+ESENCIA PASAS AL RON FR47500 CRAMER X 250g
+ESENCIA PASAS AL RON FR47500 CRAMER X 100g
+ESENCIA PASAS AL RON FR648500 CRAMER X 5kg
+ESENCIA PASAS AL RON FR648500 CRAMER X 1kg
+ESENCIA PERA FP933600 CRAMER X 5kg
+ESENCIA PERA FP933600 CRAMER X 1kg
+ESENCIA PERA FP933600 CRAMER X 250g
+ESENCIA PIÑA FP923900 CRAMER X 5kg
+ESENCIA PIÑA FP923900 CRAMER X 1kg
+ESENCIA PIÑA FP923900 CRAMER X 250g
+ESENCIA PIÑA COLADA SABOR P0769900 CRAMER X 5kg
+ESENCIA PIÑA COLADA SABOR P0769900 CRAMER X 1kg
+ESENCIA PIÑA TURBIA P4234000 CRAMER X 5kg
+ESENCIA PIÑA TURBIA P4234000 CRAMER X 1kg
+ESENCIA PLATANO 2P809200 CRAMER X 5kg
+ESENCIA PLATANO 2P809200 CRAMER X 1kg
+ESENCIA PLATANO 2P809200 CRAMER X 250g
+ESENCIA ROBLE AMERICANO 315700 CRAMER X 1kg
+ESENCIA ROBLE AMERICANO 315700 CRAMER X 250g
+ESENCIA RON EXTRA 808003 CRAMER X 1kg
+ESENCIA RON EXTRA 808003 CRAMER X 250g
+ESENCIA RON EXTRA 808003 CRAMER X 100g
+ESENCIA SAUCO 2S146700 CRAMER X 5kg
+ESENCIA SAUCO 2S146700 CRAMER X 1kg
+ESENCIA SAUCO 2S146700 CRAMER X 250g
+ESENCIA TIPO MOROCHA PE359100 CRAMER X 1kg
+ESENCIA TUTTI FRUTTI FT538300 CRAMER X 5kg
+ESENCIA TUTTI FRUTTI FT538300 CRAMER X 1kg
+ESENCIA TUTTI FRUTTI FT538300 CRAMER X 250g
+ESENCIA UVA PE303200 CRAMER X 5kg
+ESENCIA UVA PE303200 CRAMER X 1kg
+ESENCIA UVA PE303200 CRAMER X 250g
+ESENCIA UVA BORGOÑA PE390800 CRAMER X 5kg
+ESENCIA UVA BORGOÑA PE390800 CRAMER X 1kg
+ESENCIA UVA BORGOÑA PE390800 CRAMER X 250g
+ESENCIA UVA ISABEL 2U261100 CRAMER X 5kg
+ESENCIA UVA ISABEL 2U261100 CRAMER X 1kg
+ESENCIA UVA ISABEL 2U261100 CRAMER X 250g
+ESENCIA UVA ITALIA FU720600 CRAMER X 5kg
+ESENCIA UVA ITALIA FU720600 CRAMER X 1kg
+ESENCIA UVA ITALIA FU720600 CRAMER X 250g
+ESENCIA VAINILLA FV351600 CRAMER X 5kg
+ESENCIA VAINILLA FV351600 CRAMER X 1kg
+ESENCIA VAINILLA PE391100 CRAMER X 5kg
+ESENCIA VAINILLA PE391100 CRAMER X 1kg
+ESENCIA VAINILLA PE391100 CRAMER X 250g
+ESENCIA VAINILLA PE391100 CRAMER X 100g
+ESENCIA VAINILLA FV557600 CRAMER X 1kg
+ESENCIA VAINILLA FV814500 CRAMER X 5kg
+ESENCIA VAINILLA FV814500 CRAMER X 1kg
+ESENCIA VAINILLA FRANCESA FV952300 CRAMER X 5kg
+ESENCIA VAINILLA FRANCESA FV952300 CRAMER X 1kg
+ESENCIA VAINILLA FRANCESA FV952300 CRAMER X 250g
+ESENCIA VODKA FV644200 CRAMER X 5kg
+ESENCIA VODKA FV644200 CRAMER X 1kg
+ESENCIA VODKA FV644200 CRAMER X 250g
+ESENCIA WISKY FW137700 CRAMER X 1kg
+ESENCIA WISKY FW137700 CRAMER X 250g
+ESTABILIZANTE EUROGEL LV1 1080290 CRAMER X 20kg
+ESTABILIZANTE EUROGEL LV1 1080290 CRAMER X 1kg
+ESTABILIZANTE EUROGEL LV1 1080290 CRAMER X 250g
+ESTABILIZANTE QUICK MIX P1 1583190 CRAMER X 20kg
+ESTABILIZANTE QUICK MIX P1 1583190 CRAMER X 1kg
+ESTABILIZANTE QUICK MIX P1 1583190 CRAMER X 250g
+SABOR ACAI DRI SEAL A6420946 CRAMER X 10kg
+SABOR ACAI DRI SEAL A6420946 CRAMER X 1kg
+SABOR ACEVICHADO SP L6795728 CRAMER X 10kg
+SABOR ACEVICHADO SP L6795728 CRAMER X 1kg
+SABOR CAFÉ DRI SEAL C2669546 CRAMER X 10kg
+SABOR CANELA PC101546 CRAMER X 10kg
+SABOR CANELA PC101546 CRAMER X 1kg
+SABOR CANELA PC101546 CRAMER X 250g
+SABOR CECINA AHUMADA SP C1303128 CRAMER X 10kg
+SABOR CECINA AHUMADA SP C1303128 CRAMER X 1kg
+SABOR CHICHA MORADA PC270846 CRAMER X 10kg
+SABOR CHICHA MORADA PC270846 CRAMER X 1kg
+SABOR CHICHA MORADA PC270846 CRAMER X 250g
+SABOR CHIRIMOYA PC427346 CRAMER X 10kg
+SABOR CHIRIMOYA PC427346 CRAMER X 1kg
+SABOR CHIRIMOYA PC427346 CRAMER X 250g
+SABOR CHOCOLATE PC138246 CRAMER X 10kg
+SABOR CHOCOLATE PC138246 CRAMER X 1kg
+SABOR CHOCOLATE PC138246 CRAMER X 250g
+SABOR CHORIZO FRESCO 1216816 CRAMER X 5kg
+SABOR CHORIZO FRESCO 1216816 CRAMER X 1kg
+SABOR COCO PC11046 CRAMER X 10kg
+SABOR COCO PC11046 CRAMER X 1kg
+SABOR COCO PC11046 CRAMER X 250g
+SABOR DURAZNO PD67146 CRAMER X 10kg
+SABOR DURAZNO PD67146 CRAMER X 1kg
+SABOR DURAZNO PD67146 CRAMER X 250g
+SABOR FRAMBUESA DRI SEAL F7685046 CRAMER X 10kg
+SABOR FRAMBUESA DRI SEAL F7685046 CRAMER X 1kg
+SABOR FRAMBUESA DRI SEAL F7685046 CRAMER X 250g
+SABOR FRAMBUESA PF170046 CRAMER X 10kg
+SABOR FRAMBUESA PF170046 CRAMER X 1kg
+SABOR FRAMBUESA PF170046 CRAMER X 250g
+SABOR FRANKFURTER 1225816 CRAMER X 5kg
+SABOR FRANKFURTER 1225816 CRAMER X 1kg
+SABOR FRESA PF139146 CRAMER X 10kg
+SABOR FRESA PF139146 CRAMER X 1kg
+SABOR FRESA PF139146 CRAMER X 250g
+SABOR FRESA PF479846 CRAMER X 10kg
+SABOR FRESA PF479846 CRAMER X 1kg
+SABOR FRESA PF479846 CRAMER X 250g
+SABOR HAMBURGUESA 1280716 CRAMER X 5kg
+SABOR HAMBURGUESA 1280716 CRAMER X 1kg
+SABOR JAMON BUCHEN 1376516 CRAMER X 5kg
+SABOR JAMON BUCHEN 1376516 CRAMER X 1kg
+SABOR JAMONADA 3079516 CRAMER X 5kg
+SABOR JAMONADA 3079516 CRAMER X 1kg
+SABOR JENGIBRE P4092346 CRAMER X 10kg
+SABOR JENGIBRE P4092346 CRAMER X 1kg
+SABOR LECHE STORM PM173646 CRAMER X 10kg
+SABOR LECHE STORM PM173646 CRAMER X 1kg
+SABOR LECHE STORM PM173646 CRAMER X 250g
+SABOR LIMON PL399846 CRAMER X 10kg
+SABOR LIMON PL399846 CRAMER X 1kg
+SABOR LIMON PL399846 CRAMER X 250g
+SABOR LUCUMA PL123646 CRAMER X 10kg
+SABOR LUCUMA PL123646 CRAMER X 1kg
+SABOR LUCUMA PL123646 CRAMER X 250g
+SABOR MANGO PM820746 CRAMER X 10kg
+SABOR MANGO PM820746 CRAMER X 1kg
+SABOR MANGO PM820746 CRAMER X 250g
+SABOR MANZANA STORM PM232546 CRAMER X 10kg
+SABOR MANZANA STORM PM232546 CRAMER X 1kg
+SABOR MANZANA STORM PM232546 CRAMER X 250g
+SABOR MARACUYA PM583946 CRAMER X 10kg
+SABOR MARACUYA PM583946 CRAMER X 1kg
+SABOR MARACUYA PM583946 CRAMER X 250g
+SABOR MENTA DRI SEAL M3645546 CRAMER X 10kg
+SABOR MENTA DRI SEAL M4091846 CRAMER X 10kg
+SABOR MENTA DRI SEAL M4091846 CRAMER X 1kg
+SABOR MENTA DRI SEAL M4091846 CRAMER X 250g
+SABOR MORA P4315646 CRAMER X 10kg
+SABOR MORA P4315646 CRAMER X 1kg
+SABOR MORA P4315646 CRAMER X 250g
+SABOR MORTADELA 1355616 CRAMER X 5kg
+SABOR MORTADELA 1355616 CRAMER X 1kg
+SABOR NARANJA PN221246 CRAMER X 10kg
+SABOR NARANJA PN221246 CRAMER X 1kg
+SABOR NARANJA PN221246 CRAMER X 250g
+SABOR NARANJA JUGO NATURAL DRI SEAL N7155046 CRAMER X 10kg
+SABOR NARANJA JUGO NATURAL DRI SEAL N7155046 CRAMER X 1kg
+SABOR NARANJA JUGO NATURAL DRI SEAL N7155046 CRAMER X 250g
+SABOR NUEZ MOSCADA SOLUBLE 1251016 CRAMER X 10kg
+SABOR NUEZ MOSCADA SOLUBLE 1251016 CRAMER X 1kg
+SABOR PICANTE SP P8185028 CRAMER X 10kg
+SABOR PICANTE SP P8185028 CRAMER X 1kg
+SABOR PIÑA PP263946 CRAMER X 10kg
+SABOR PIÑA PP263946 CRAMER X 1kg
+SABOR PIÑA PP263946 CRAMER X 250g
+SABOR PLATANO STORM PP223846 CRAMER X 10kg
+SABOR PLATANO STORM PP223846 CRAMER X 1kg
+SABOR PLATANO STORM PP223846 CRAMER X 250g
+SABOR POLLO A LA BRASA SP P5065728 CRAMER X 10kg
+SABOR POLLO A LA BRASA SP P5065728 CRAMER X 1kg
+SABOR QUESO SP Q1984128 CRAMER X 10kg
+SABOR QUESO SP Q1984128 CRAMER X 1kg
+SABOR TOCINO SP T1744828 CRAMER X 10kg
+SABOR TOCINO SP T1744828 CRAMER X 1kg
+SABOR UVA PU142946 CRAMER X 10kg
+SABOR UVA PU142946 CRAMER X 1kg
+SABOR UVA PU142946 CRAMER X 250g
+SABOR VAINILLA STORM PV171046 CRAMER X 10kg
+SABOR VAINILLA STORM PV171046 CRAMER X 1kg
+SABOR VAINILLA STORM PV171046 CRAMER X 250g
+SABOR VAINILLA CREMOSA DRI SEAL V2581946 CRAMER X 10kg
+SABOR VAINILLA CREMOSA DRI SEAL V2581946 CRAMER X 1kg
+SABOR VAINILLA CREMOSA DRI SEAL V2581946 CRAMER X 250g
+COLOR COLPUR PIMENTON 871220 CRAMER X 5kg
+COLOR COLPUR PIMENTON 871220 CRAMER X 1kg
+
+[DRESDEN FI]
+ADA - AZODICARBONAMIDA X 25kg
+ALFA-AMILASA FUNGAL E 5000 X 25kg
+AMILASA MALTOGENICA MTG1500 X 5kg
+FOSFATO PARA MASAS BUDENHEIM X 25kg
+FOSFATO PARA MASAS BUDENHEIM X 5kg
+FOSFATO PARA MASAS BUDENHEIM X 1kg
+FOSFATO PARA JAMONES BUDENHEIM X 25kg
+FOSFATO PARA JAMONES BUDENHEIM X 5kg
+FOSFATO PARA JAMONES BUDENHEIM X 1kg
+MONOGLICERIDO DESTILADO AL 90% KEVIN FOOD X 25kg
+SSL - ESTEAORIL LACTILADO DE SODIO X 25Kg
+
+[BENDITOS DEL PERÚ]
+AJONJOLI PERLADO COA X 25kg
+
+[LEÓN OJEDA, CARMEN - CONDIMENTOS]
+SABOR JAMON INGLES LINROS X 5kg
+SABOR JAMON INGLES LINROS X 1kg
+SABOR SALCHICHA VIENA LINROS X 5kg
+SABOR SALCHICHA VIENA LINROS X 1kg
+
+[LINROS]
+SAL DE CURA LINROS X 1kg
+SALMUERA COMPLETA PARA JAMONES TOTAL JAM LINROS X 5kg
+SALMUERA INTEGRAL PIZZA JAM 100/92E LINROS X 22kg
+SALMUERA COMPLETA PARA MASAS LINROS X 5kg
+
+[LUFRAN - FILTROS]
+FILTRO AKS4 40X40 PALL
+FILTRO EK 40X40 PALL
+FILTRO EKS 60X60 PALL
+FILTRO KS50 40X40 PALL
+FILTRO KS80 20X20 PALL
+FILTRO KS80 40X40 PALL
+FILTRO K100 40X40 PALL
+FILTRO K200 40X40 PALL
+FILTRO K250 40X40 PALL
+FILTRO K300 40X40 PALL
+FILTRO K700 40X40 PALL
+FILTRO K900 40X40 PALL
+CLARIS CLR 1-10 PALL
+CLARIS CLR 1-30 PALL
+CLARIS CLR 3-10 PALL
+CLARIS CLR 5-10 PALL
+CLARIS CLR 5-19.5 PALL
+
+[SACCO]
+LYOTO M 536 R P/50LTS SACCO 
+LYOTO M 536 S P/50LTS SACCO
+LYOFAST AB 1 DOSIS 30 SACCO
+LYOFAST BGP 1 DOSIS 1 SACCO
+LYOFAST BGP 1 DOSIS 10 SACCO 
+LYOFAST CPR 4P1 DOSIS 10 SACCO
+LYOFAST CRL 1505 DOSIS 1 SACCO
+LYOFAST CRL 1505 DOSIS 10 SACCO 
+LYOFAST LB 4 10UC SACCO
+LYOFAST LCR 4P06 DOSIS 10 SACCO
+LYOFAST LH 091 5UC SACCO
+LYOFAST LH 091 10UC SACCO
+LYOFAST LH 13 5UC SACCO
+LYOFAST LH 13 10UC SACCO
+LYOFAST LR B DOSIS 2 SACCO
+LYOFAST LR B DOSIS 5 SACCO
+LYOFAST LR B DOSIS 10 SACCO
+LYOFAST LR 4PD DOSIS 5 SACCO
+LYOFAST LR 4PD DOSIS 10 SACCO 
+LYOFAST MOS 062 B 1UC SACCO
+LYOFAST MOS 062 B 10UC SACCO
+LYOFAST MOS 062 D 1UC SACCO
+LYOFAST MOS 062 D 5UC SACCO 
+LYOFAST MOS 062 D 10UC SACCO
+LYOFAST MOS 064 D 5UC SACCO
+LYOFAST MOS 064 D 10UC SACCO
+LYOFAST MOT 092 EE 10UC SACCO
+LYOFAST MOT 095 EF 10UC SACCO
+LYOFAST MS 064 CP 10UC SACCO 
+LYOFAST MTX 432 EN 1UC SACCO 
+LYOFAST MTX 432 EN 5UC SACCO
+LYOFAST MW 031 R 5UC SACCO 
+LYOFAST MW 031 R 10UC SACCO 
+LYOFAST MW 031 S 5UC SACCO
+LYOFAST MW 031 S 10UC SACCO
+LYOFAST MW 036 S 5UC SACCO
+LYOFAST MW 036 S 10UC SACCO
+LYOFAST MW 039 S 1UC SACCO
+LYOFAST MW 039 S 5UC SACCO
+LYOFAST MW 039 S 10UC SACCO
+LYOFAST MWO 030 1UC SACCO 
+LYOFAST MWO 030 5UC SACCO
+LYOFAST MWO 030 10UC SACCO 
+LYOFAST MWO 032 1UC SACCO 
+LYOFAST MWO 032 5UC SACCO 
+LYOFAST MWO 032 10UC SACCO 
+LYOFAST MWO 040 1UC SACCO 
+LYOFAST MWO 040 5UC SACCO 
+LYOFAST MWO 042 1UC SACCO 
+LYOFAST MWO 042 5UC SACCO 
+LYOFAST PB 1 DOSIS 10 SACCO 
+LYOFAST PCV 5 DOSIS 10 SACCO 
+LYOFAST PRN DOSIS 1 SACCO
+LYOFAST SAB 440 A 1UC SACCO
+LYOFAST SAB 440 A 5UC SACCO 
+LYOFAST SAB 442 A 1UC SACCO 
+LYOFAST SAB 442 A 5UC SACCO 
+LYOFAST SAB 446 B 1UC SACCO 
+LYOFAST SAB 446 B 5UC SACCO
+LYOFAST SH 092 F 10UC SACCO
+LYOFAST SH 096 F 10UC SACCO
+LYOFAST ST 042 5UC SACCO
+LYOFAST ST REGINA M0 1UC SACCO 
+LYOFAST ST REGINA M0 5UC SACCO 
+LYOFAST ST REGINA M0 10UC SACCO
+LYOFAST ST REGINA M2 5UC SACCO
+LYOFAST ST REGINA M2 10UC SACCO
+LYOFAST ST REGINA M4 5UC SACCO 
+LYOFAST ST REGINA M4 10UC SACCO
+LYOFAST SYAB 1 1UC SACCO
+LYOFAST SYAB 1 5UC SACCO
+LYOFAST SYNBIO 100 DOSIS 1 SACCO
+LYOFAST SYNBIO 100 DOSIS 100 SACCO
+LYOFAST V STV 10 1UC SACCO 
+LYOFAST Y 082 B 5UC SACCO
+LYOFAST Y 432 A 1UC SACCO
+LYOFAST Y 432 A 5UC SACCO 
+LYOFAST Y 438 A 1UC SACCO
+LYOFAST Y 438 A 10UC SACCO
+LYOFAST Y 438 A 50UC SACCO
+LYOFAST Y 439 A 10UC SACCO
+LYOFAST Y 450 B 1UC SACCO
+LYOFAST Y 450 B 5UC SACCO
+LYOFAST Y 452 B 1UC SACCO
+LYOFAST Y 452 B 5UC SACCO
+LYOFAST Y 456 B 1UC SACCO
+LYOFAST Y 456 B 5UC SACCO
+LYOFAST Y 470 E 1UC SACCO
+LYOFAST Y 470 E 5UC SACCO
+LYOFAST Y 470 E 40UC SACCO 
+LYOFAST Y 472 E 1UC SACCO
+LYOFAST YCE 438 A 5UC SACCO
+YO-MILD 1UC SACCO
+YO-MILD 5UC SACCO
+YO-MILD 10UC SACCO
+LYOFAST YH 092 F 10UC SACCO
+LYOFAST YHL 092 F 20UC SACCO
+LYOFLORA V3 DOSIS 50 SACCO
+MIX PROFUXION 100 BLN SACCO X 20kg
+"""
+
+DICCIONARIO_PROVEEDORES = {}
+proveedor_actual = ""
+
+for linea in TEXTO_PROVEEDORES.strip().split('\n'):
+    linea = linea.strip().upper()
+    if not linea: continue
+    
+    if linea.startswith('[') and linea.endswith(']'):
+        proveedor_actual = linea[1:-1]
+    else:
+        prod_limpio = " ".join(linea.split())
+        DICCIONARIO_PROVEEDORES[prod_limpio] = proveedor_actual
+
+def detectar_proveedor_exacto(nombre_odoo):
+    nombre_limpio = " ".join(str(nombre_odoo).upper().strip().split())
+    # Devuelve "" (vacío) si no lo encuentra, en vez de "GENÉRICO"
+    return DICCIONARIO_PROVEEDORES.get(nombre_limpio, "")
+
 # =========================================================
 
 CACHE_PRODUCTOS = []
@@ -59,7 +622,6 @@ def guardar_db_manual(nombre, campo, valor):
 def detectar_info_basica(nombre, codigo=""):
     nombre = str(nombre).upper()
     codigo = str(codigo).upper().strip()
-    
     match = re.search(r'X?\s*(\d+\.?\d*)\s*(KG|G|L|LT|ML)', nombre)
     if match: 
         kg = float(match.group(1))
@@ -75,7 +637,6 @@ def detectar_info_basica(nombre, codigo=""):
     return kg
 
 def normalizar_texto(texto):
-    """Limpia tildes, espacios extra y pasa a mayúsculas para evitar errores de tipeo de columnas"""
     if pd.isna(texto): return ""
     t = str(texto).strip().upper()
     return ''.join(c for c in unicodedata.normalize('NFD', t) if unicodedata.category(c) != 'Mn')
@@ -86,103 +647,73 @@ def cargar_reglas_excel():
         if FILE_REGLAS.endswith('.csv'): df = pd.read_csv(FILE_REGLAS)
         else: df = pd.read_excel(FILE_REGLAS)
             
-        # Normalizamos los nombres de las columnas para buscar coincidencias exactas y seguras
         df.columns = [normalizar_texto(c) for c in df.columns]
         
-        # BÚSQUEDA ESTRICTA DE PARÁMETROS: Solo lee si las columnas se llaman exactamente así
         col_prod = "PRODUCTO" if "PRODUCTO" in df.columns else None
         col_margen = "MARGEN" if "MARGEN" in df.columns else None
         col_envase = "TIPO ENVASE" if "TIPO ENVASE" in df.columns else None
-        
-        # Flete (Soporta si le pusieron el punto o no en "Cód. Flete")
         col_flete = next((c for c in df.columns if c in ["COD. FLETE", "COD FLETE"]), None) 
-        
         col_peligroso = "PELIGROSO" if "PELIGROSO" in df.columns else None
         col_manual = "COSTO FABRICACION" if "COSTO FABRICACION" in df.columns else None
         
         reglas = {}
-        if not col_prod: 
-            print("⚠️ Error: No se encontró la columna 'Producto' en el Excel Maestro.")
-            return {}
+        if not col_prod: return {}
 
         for _, row in df.iterrows():
             if pd.isna(row[col_prod]): continue
             nombre = str(row[col_prod]).upper().strip()
             
-            # Margen
             m = MARGEN_DEFECTO
             if col_margen and not pd.isna(row[col_margen]):
                 val = pd.to_numeric(row[col_margen], errors='coerce')
                 if not pd.isna(val): m = val / 100 if val > 1 else val
             
-            # Envase
             e = ""
-            if col_envase and not pd.isna(row[col_envase]):
-                e = str(row[col_envase]).upper().strip()
+            if col_envase and not pd.isna(row[col_envase]): e = str(row[col_envase]).upper().strip()
+            f = "FLETE LIM-AQP/TRUJ X KG"
+            if col_flete and not pd.isna(row[col_flete]): f = str(row[col_flete]).upper().strip()
                 
-            # Cod Flete
-            f = "F1" 
-            if col_flete and not pd.isna(row[col_flete]):
-                f = str(row[col_flete]).upper().strip()
-                
-            # Peligroso
             p = False
             if col_peligroso and not pd.isna(row[col_peligroso]):
                 val_p = str(row[col_peligroso]).upper().strip()
                 if val_p in ['SI', 'YES', 'TRUE', '1']: p = True
                 
-            # Costo Manual
             cm = 0.0
             if col_manual and not pd.isna(row[col_manual]):
                 val = pd.to_numeric(row[col_manual], errors='coerce')
                 if not pd.isna(val): cm = val
 
-            dict_regla = {
-                "margen": m,
-                "envase": e,
-                "cod_flete": f,
-                "peligroso": p,
-                "costo_manual": cm
-            }
-            
+            dict_regla = {"margen": m, "envase": e, "cod_flete": f, "peligroso": p, "costo_manual": cm}
             reglas[nombre] = dict_regla
             nombre_base = re.sub(r'\s*X?\s*\d+\.?\d*\s*(KG|G|L|LT|GALON|ML)\s*$', '', nombre).strip()
             if nombre_base not in reglas: reglas[nombre_base] = dict_regla
-                
         return reglas
     except Exception as e:
-        print(f"Error reglas: {e}")
         return {}
 
 def cargar_df_seguro(filepath):
     try:
         if filepath.endswith('.csv'): df_temp = pd.read_csv(filepath, header=None)
         else: df_temp = pd.read_excel(filepath, header=None)
-            
         header_row_idx = 0
         for idx, row in df_temp.iterrows():
             row_str = ' '.join(str(x).lower() for x in row.values if pd.notna(x))
             if ('producto' in row_str or 'name' in row_str) and ('c/u' in row_str or 'cost' in row_str or 'precio' in row_str):
                 header_row_idx = idx
                 break
-                
         if filepath.endswith('.csv'): return pd.read_csv(filepath, header=header_row_idx)
         else: return pd.read_excel(filepath, header=header_row_idx)
-    except Exception as e:
-        print(f"Error cargando archivo seguro: {e}")
-        return None
+    except Exception as e: return None
 
 def procesar_excel():
     if not os.path.exists(FILE_PRECIOS): return []
     try:
         db_manual = cargar_db_manual()
         reglas_excel = cargar_reglas_excel()
-        
         df = cargar_df_seguro(FILE_PRECIOS)
         if df is None: return []
             
         df.columns = [str(c).strip().lower() for c in df.columns]
-        
         col_nombre = next((c for c in df.columns if c in ['producto', 'nombre', 'name']), None)
         if not col_nombre: col_nombre = next((c for c in df.columns if 'producto' in c and 'categor' not in c and 'cod' not in c), None)
         col_costo = next((c for c in df.columns if 'c/u' in c or 'usd' in c or '$' in c or 'cost' in c or 'unit' in c), None)
@@ -192,7 +723,6 @@ def procesar_excel():
         col_unidad = next((c for c in df.columns if 'unidad' in c), None)
         
         if not col_costo or not col_nombre: return []
-
         precios_maestros = {}
         temp_data = []
 
@@ -207,22 +737,21 @@ def procesar_excel():
 
             kg = detectar_info_basica(nombre_full, codigo)
             
+            # Aquí extrae "" si no está en la lista estricta
+            proveedor = detectar_proveedor_exacto(nombre_full)
+            
             nombre_upper = nombre_full.upper()
             nombre_base = re.sub(r'\s*X?\s*\d+\.?\d*\s*(KG|G|L|LT|GALON|ML)\s*$', '', nombre_upper).strip()
 
             regla_maestra = reglas_excel.get(nombre_upper, reglas_excel.get(nombre_base))
-            
             costo_base_usd = 0.0
-            if regla_maestra and regla_maestra['costo_manual'] > 0:
-                costo_base_usd = regla_maestra['costo_manual'] * 1.05 
-            else:
-                costo_base_usd = pd.to_numeric(row[col_costo], errors='coerce') or 0.0
+            if regla_maestra and regla_maestra['costo_manual'] > 0: costo_base_usd = regla_maestra['costo_manual'] * 1.05 
+            else: costo_base_usd = pd.to_numeric(row[col_costo], errors='coerce') or 0.0
 
             temp_data.append({
                 'nombre': nombre_full, 'categoria': categoria, 'marca': marca, 'codigo': codigo,
-                'unidad_tipo': unidad, 'costo_usd': costo_base_usd, 'kg': kg
+                'unidad_tipo': unidad, 'costo_usd': costo_base_usd, 'kg': kg, 'proveedor': proveedor
             })
-
             if costo_base_usd > 0.0001: precios_maestros[nombre_base] = costo_base_usd
 
         resultados = []
@@ -238,68 +767,44 @@ def procesar_excel():
                 else: continue
 
             regla_encontrada = reglas_excel.get(nombre_u, reglas_excel.get(nombre_base, {
-                "margen": MARGEN_DEFECTO, "envase": "", "cod_flete": "F1", "peligroso": False
+                "margen": MARGEN_DEFECTO, "envase": "", "cod_flete": "FLETE LIM-AQP/TRUJ X KG", "peligroso": False
             }))
-            
             regla = dict(regla_encontrada) 
+            if nombre in db_manual and 'margen' in db_manual[nombre]: regla['margen'] = db_manual[nombre]['margen']
 
-            if nombre in db_manual and 'margen' in db_manual[nombre]: 
-                regla['margen'] = db_manual[nombre]['margen']
-
-            # 1. Costo Envase
             costo_envase_unit = 0.0
-            etiqueta_envase = regla['envase']
-            if etiqueta_envase in TARIFAS_ENVASE:
-                costo_envase_unit = TARIFAS_ENVASE[etiqueta_envase] / kg
+            etiq = regla['envase']
+            if etiq in TARIFAS_ENVASE: costo_envase_unit = TARIFAS_ENVASE[etiq] / kg
             else:
                 if kg == 1: costo_envase_unit = COSTO_ENVASE_STD_1KG / 1
                 elif kg == 5: costo_envase_unit = COSTO_ENVASE_STD_5KG / 5
 
-            # 2. Costo Operativo y Lima
             costo_op = costo + costo_envase_unit
             precio_lima = costo_op * (1 + regla['margen'])
             
-            # 3. Flete (Código + Peligroso)
-            codigo_flete = regla['cod_flete']
-            flete_base = TARIFAS_FLETE.get(codigo_flete, 0.08) 
-            
-            if regla['peligroso']: 
-                flete_base += RECARGO_PELIGROSO
-                
+            flete_base = TARIFAS_FLETE.get(regla['cod_flete'], 0.08) 
+            if regla['peligroso']: flete_base += RECARGO_PELIGROSO
             precio_prov = precio_lima + flete_base
 
             resultados.append({
-                "nombre": nombre,
-                "categoria": item['categoria'],
-                "marca": item['marca'],
-                "codigo": item['codigo'],
-                "unidad_tipo": item['unidad_tipo'],
-                "margen": f"{round(regla['margen']*100, 1)}",
-                "precio_lima": round(precio_lima, 2),
-                "precio_aqp": round(precio_prov, 2),
-                "precio_tru": round(precio_prov, 2),
-                "presentacion": kg,
-                "flete_status": "NO" if codigo_flete == "F0" else "SI"
+                "nombre": nombre, "categoria": item['categoria'], "marca": item['marca'],
+                "codigo": item['codigo'], "unidad_tipo": item['unidad_tipo'], "proveedor": item['proveedor'],
+                "margen": f"{round(regla['margen']*100, 1)}", "precio_lima": round(precio_lima, 2),
+                "precio_aqp": round(precio_prov, 2), "precio_tru": round(precio_prov, 2),
+                "presentacion": kg, "flete_status": "NO" if regla['cod_flete'] == "NINGUNO" else "SI"
             })
 
         unicos = {}
         for r in resultados:
             clave = f"{r['codigo']}_{r['nombre']}_{r['presentacion']}"
-            if clave not in unicos or r['precio_lima'] > unicos[clave]['precio_lima']: 
-                unicos[clave] = r
+            if clave not in unicos or r['precio_lima'] > unicos[clave]['precio_lima']: unicos[clave] = r
                 
         lista_final = list(unicos.values())
-        
         lista_final.sort(key=lambda x: (
-            re.sub(r'\s*X?\s*\d+\.?\d*\s*(KG|G|L|LT|GALON|ML)\s*$', '', x['nombre'].upper()).strip(),
-            -x['presentacion']
+            re.sub(r'\s*X?\s*\d+\.?\d*\s*(KG|G|L|LT|GALON|ML)\s*$', '', x['nombre'].upper()).strip(), -x['presentacion']
         ))
-        
         return lista_final
-
-    except Exception as e:
-        print(f"Error procesando data: {e}")
-        return []
+    except Exception as e: return []
 
 def actualizar_cache():
     global CACHE_PRODUCTOS
@@ -315,7 +820,6 @@ def home(): return render_template('index.html')
 def buscar():
     q = request.args.get('q', '').upper().strip()
     if not q: return jsonify(CACHE_PRODUCTOS)
-        
     palabras = q.split()
     res = [p for p in CACHE_PRODUCTOS if all(pal in p['nombre'].upper() for pal in palabras)]
     return jsonify(res)
@@ -323,9 +827,6 @@ def buscar():
 @app.route('/subir-precios', methods=['POST'])
 def subir_precios():
     f = request.files['archivo']
-    ext = os.path.splitext(f.filename)[1]
-    global FILE_PRECIOS
-    FILE_PRECIOS = f"data_precios{ext}"
     f.save(FILE_PRECIOS)
     actualizar_cache() 
     return jsonify({"mensaje": "✅ Costos Odoo actualizados"})
@@ -333,9 +834,6 @@ def subir_precios():
 @app.route('/subir-reglas', methods=['POST'])
 def subir_reglas():
     f = request.files['archivo']
-    ext = os.path.splitext(f.filename)[1]
-    global FILE_REGLAS
-    FILE_REGLAS = f"data_reglas{ext}"
     f.save(FILE_REGLAS)
     actualizar_cache() 
     return jsonify({"mensaje": "✅ Reglas Maestras actualizadas"})
