@@ -9,21 +9,21 @@ import unicodedata
 app = Flask(__name__, template_folder='templates')
 CORS(app)
 
+# =========================================================
+# 🔒 CONTRASEÑA DE ADMINISTRADOR (Seguridad Backend)
+# =========================================================
+ADMIN_SECRET = "admin123"
+
 # --- ARCHIVOS ---
-FILE_PRECIOS = "data_precios.xlsx"    
+FILE_PRECIOS_LINROS = "data_precios_linros.xlsx"    
+FILE_PRECIOS_INTERINSUMO = "data_precios_interinsumo.xlsx"
 FILE_REGLAS = "data_reglas.xlsx"      
 FILE_DB_MANUAL = "db_manual.json"     
 
 # =========================================================
-# 📘 DICCIONARIOS DE TARIFAS OFICIALES GLI
+# 📘 TARIFAS POR DEFECTO Y FLETES
 # =========================================================
 MARGEN_DEFECTO = 0.20
-
-TARIFAS_ENVASE = {
-    "GALONERA": 0.88, "FRASCO 1L": 0.35, "FRASCO 500ML": 0.26, 
-    "FRASCO 250ML": 0.21, "FRASCO 120ML": 0.14, "BALDE 25KG": 4.60,      
-    "CAJA CHICA": 1.08, "CAJA GRANDE": 1.12, "BOLSA FLEXO": 0.26, "NINGUNO": 0.0
-}
 COSTO_ENVASE_STD_1KG = 0.26  
 COSTO_ENVASE_STD_5KG = 0.88  
 
@@ -34,15 +34,11 @@ TARIFAS_FLETE = {
 }
 RECARGO_PELIGROSO = 0.03  
 
-# =========================================================
-# 🏭 MAPEO ESTRICTO DE PROVEEDORES
-# =========================================================
 TEXTO_PROVEEDORES = """
 [ALITECNO]
 SAL DE CURA CONCENTRADA TECNAS X 25kg
 SAL DE CURA CONCENTRADA TECNAS X 5kg
 SAL DE CURA CONCENTRADA TECNAS X 1kg
-
 [CRAMER]
 CREMA CHIRIMOYA 850019 CRAMER X 4kg
 CREMA CHOCOLATE SUIZO 1528519 CRAMER X 5kg
@@ -433,7 +429,6 @@ SABOR VAINILLA CREMOSA DRI SEAL V2581946 CRAMER X 1kg
 SABOR VAINILLA CREMOSA DRI SEAL V2581946 CRAMER X 250g
 COLOR COLPUR PIMENTON 871220 CRAMER X 5kg
 COLOR COLPUR PIMENTON 871220 CRAMER X 1kg
-
 [DRESDEN FI]
 ADA - AZODICARBONAMIDA X 25kg
 ALFA-AMILASA FUNGAL E 5000 X 25kg
@@ -446,22 +441,18 @@ FOSFATO PARA JAMONES BUDENHEIM X 5kg
 FOSFATO PARA JAMONES BUDENHEIM X 1kg
 MONOGLICERIDO DESTILADO AL 90% KEVIN FOOD X 25kg
 SSL - ESTEAORIL LACTILADO DE SODIO X 25Kg
-
 [BENDITOS DEL PERÚ]
 AJONJOLI PERLADO COA X 25kg
-
 [LEÓN OJEDA, CARMEN - CONDIMENTOS]
 SABOR JAMON INGLES LINROS X 5kg
 SABOR JAMON INGLES LINROS X 1kg
 SABOR SALCHICHA VIENA LINROS X 5kg
 SABOR SALCHICHA VIENA LINROS X 1kg
-
 [LINROS]
 SAL DE CURA LINROS X 1kg
 SALMUERA COMPLETA PARA JAMONES TOTAL JAM LINROS X 5kg
 SALMUERA INTEGRAL PIZZA JAM 100/92E LINROS X 22kg
 SALMUERA COMPLETA PARA MASAS LINROS X 5kg
-
 [LUFRAN - FILTROS]
 FILTRO AKS4 40X40 PALL
 FILTRO EK 40X40 PALL
@@ -480,7 +471,6 @@ CLARIS CLR 1-30 PALL
 CLARIS CLR 3-10 PALL
 CLARIS CLR 5-10 PALL
 CLARIS CLR 5-19.5 PALL
-
 [SACCO]
 LYOTO M 536 R P/50LTS SACCO 
 LYOTO M 536 S P/50LTS SACCO
@@ -585,23 +575,14 @@ MIX PROFUXION 100 BLN SACCO X 20kg
 
 DICCIONARIO_PROVEEDORES = {}
 proveedor_actual = ""
-
 for linea in TEXTO_PROVEEDORES.strip().split('\n'):
     linea = linea.strip().upper()
     if not linea: continue
-    
-    if linea.startswith('[') and linea.endswith(']'):
-        proveedor_actual = linea[1:-1]
-    else:
-        prod_limpio = " ".join(linea.split())
-        DICCIONARIO_PROVEEDORES[prod_limpio] = proveedor_actual
+    if linea.startswith('[') and linea.endswith(']'): proveedor_actual = linea[1:-1]
+    else: DICCIONARIO_PROVEEDORES[" ".join(linea.split())] = proveedor_actual
 
 def detectar_proveedor_exacto(nombre_odoo):
-    nombre_limpio = " ".join(str(nombre_odoo).upper().strip().split())
-    # Devuelve "" (vacío) si no lo encuentra, en vez de "GENÉRICO"
-    return DICCIONARIO_PROVEEDORES.get(nombre_limpio, "")
-
-# =========================================================
+    return DICCIONARIO_PROVEEDORES.get(" ".join(str(nombre_odoo).upper().strip().split()), "")
 
 CACHE_PRODUCTOS = []
 
@@ -616,8 +597,7 @@ def guardar_db_manual(nombre, campo, valor):
     datos = cargar_db_manual()
     if nombre not in datos: datos[nombre] = {}
     datos[nombre][campo] = valor
-    with open(FILE_DB_MANUAL, 'w', encoding='utf-8') as f:
-        json.dump(datos, f, ensure_ascii=False, indent=4)
+    with open(FILE_DB_MANUAL, 'w', encoding='utf-8') as f: json.dump(datos, f, ensure_ascii=False, indent=4)
 
 def detectar_info_basica(nombre, codigo=""):
     nombre = str(nombre).upper()
@@ -646,15 +626,14 @@ def cargar_reglas_excel():
     try:
         if FILE_REGLAS.endswith('.csv'): df = pd.read_csv(FILE_REGLAS)
         else: df = pd.read_excel(FILE_REGLAS)
-            
         df.columns = [normalizar_texto(c) for c in df.columns]
         
         col_prod = "PRODUCTO" if "PRODUCTO" in df.columns else None
         col_margen = "MARGEN" if "MARGEN" in df.columns else None
-        col_envase = "TIPO ENVASE" if "TIPO ENVASE" in df.columns else None
-        col_flete = next((c for c in df.columns if c in ["COD. FLETE", "COD FLETE"]), None) 
+        col_envase = next((c for c in df.columns if 'ENVASE' in c), None) 
+        col_flete = next((c for c in df.columns if c in ["COD. FLETE", "COD FLETE", "FLETE"]), None) 
         col_peligroso = "PELIGROSO" if "PELIGROSO" in df.columns else None
-        col_manual = "COSTO FABRICACION" if "COSTO FABRICACION" in df.columns else None
+        col_manual = next((c for c in df.columns if 'FABRICACION' in c or 'ADICIONAL' in c or 'MANUAL' in c), None)
         
         reglas = {}
         if not col_prod: return {}
@@ -668,52 +647,68 @@ def cargar_reglas_excel():
                 val = pd.to_numeric(row[col_margen], errors='coerce')
                 if not pd.isna(val): m = val / 100 if val > 1 else val
             
-            e = ""
-            if col_envase and not pd.isna(row[col_envase]): e = str(row[col_envase]).upper().strip()
+            e = 0.0
+            if col_envase and not pd.isna(row[col_envase]): 
+                val_str = str(row[col_envase]).replace('$', '').replace(',', '').strip()
+                val_e = pd.to_numeric(val_str, errors='coerce')
+                if not pd.isna(val_e): e = val_e
+                
             f = "FLETE LIM-AQP/TRUJ X KG"
             if col_flete and not pd.isna(row[col_flete]): f = str(row[col_flete]).upper().strip()
-                
+            
             p = False
             if col_peligroso and not pd.isna(row[col_peligroso]):
                 val_p = str(row[col_peligroso]).upper().strip()
                 if val_p in ['SI', 'YES', 'TRUE', '1']: p = True
-                
+            
             cm = 0.0
             if col_manual and not pd.isna(row[col_manual]):
-                val = pd.to_numeric(row[col_manual], errors='coerce')
-                if not pd.isna(val): cm = val
+                val_m = pd.to_numeric(row[col_manual], errors='coerce')
+                if not pd.isna(val_m): cm = val_m
 
-            dict_regla = {"margen": m, "envase": e, "cod_flete": f, "peligroso": p, "costo_manual": cm}
+            dict_regla = {"margen": m, "envase": e, "cod_flete": f, "peligroso": p, "costo_adicional": cm}
             reglas[nombre] = dict_regla
+            
             nombre_base = re.sub(r'\s*X?\s*\d+\.?\d*\s*(KG|G|L|LT|GALON|ML)\s*$', '', nombre).strip()
             if nombre_base not in reglas: reglas[nombre_base] = dict_regla
+            
         return reglas
-    except Exception as e:
-        return {}
+    except Exception as e: return {}
 
-def cargar_df_seguro(filepath):
+def cargar_y_limpiar_excel(filepath):
+    if not os.path.exists(filepath): return None
     try:
         if filepath.endswith('.csv'): df_temp = pd.read_csv(filepath, header=None)
         else: df_temp = pd.read_excel(filepath, header=None)
+        
         header_row_idx = 0
         for idx, row in df_temp.iterrows():
             row_str = ' '.join(str(x).lower() for x in row.values if pd.notna(x))
             if ('producto' in row_str or 'name' in row_str) and ('c/u' in row_str or 'cost' in row_str or 'precio' in row_str):
                 header_row_idx = idx
                 break
-        if filepath.endswith('.csv'): return pd.read_csv(filepath, header=header_row_idx)
-        else: return pd.read_excel(filepath, header=header_row_idx)
+                
+        if filepath.endswith('.csv'): df = pd.read_csv(filepath, header=header_row_idx)
+        else: df = pd.read_excel(filepath, header=header_row_idx)
+        
+        df.columns = [str(c).strip().lower() for c in df.columns]
+        return df
     except Exception as e: return None
 
 def procesar_excel():
-    if not os.path.exists(FILE_PRECIOS): return []
     try:
         db_manual = cargar_db_manual()
         reglas_excel = cargar_reglas_excel()
-        df = cargar_df_seguro(FILE_PRECIOS)
-        if df is None: return []
+        
+        df_linros = cargar_y_limpiar_excel(FILE_PRECIOS_LINROS)
+        df_inter = cargar_y_limpiar_excel(FILE_PRECIOS_INTERINSUMO)
+        
+        dfs_to_concat = []
+        if df_linros is not None: dfs_to_concat.append(df_linros)
+        if df_inter is not None: dfs_to_concat.append(df_inter)
+        
+        df = pd.concat(dfs_to_concat, ignore_index=True) if dfs_to_concat else pd.DataFrame()
             
-        df.columns = [str(c).strip().lower() for c in df.columns]
         col_nombre = next((c for c in df.columns if c in ['producto', 'nombre', 'name']), None)
         if not col_nombre: col_nombre = next((c for c in df.columns if 'producto' in c and 'categor' not in c and 'cod' not in c), None)
         col_costo = next((c for c in df.columns if 'c/u' in c or 'usd' in c or '$' in c or 'cost' in c or 'unit' in c), None)
@@ -722,64 +717,111 @@ def procesar_excel():
         col_codigo = next((c for c in df.columns if 'codigo' in c or 'código' in c), None)
         col_unidad = next((c for c in df.columns if 'unidad' in c), None)
         
-        if not col_costo or not col_nombre: return []
-        precios_maestros = {}
+        info_base = {} 
         temp_data = []
 
-        for _, row in df.iterrows():
-            nombre_full = str(row[col_nombre]).strip()
-            if nombre_full == 'nan' or not nombre_full: continue
-            
-            categoria = str(row[col_cat]).strip().upper() if col_cat and pd.notna(row[col_cat]) else 'GENERAL'
-            marca = str(row[col_marca]).strip().upper() if col_marca and pd.notna(row[col_marca]) else 'GENERICO'
-            codigo = str(row[col_codigo]).strip() if col_codigo and pd.notna(row[col_codigo]) else 'S/C'
-            unidad = str(row[col_unidad]).strip().upper() if col_unidad and pd.notna(row[col_unidad]) else 'KG'
+        # 1. LEER ODOO
+        if col_costo and col_nombre:
+            for _, row in df.iterrows():
+                nombre_full = str(row[col_nombre]).strip()
+                if nombre_full == 'nan' or not nombre_full: continue
+                
+                categoria = str(row[col_cat]).strip().upper() if col_cat and pd.notna(row[col_cat]) else 'GENERAL'
+                marca = str(row[col_marca]).strip().upper() if col_marca and pd.notna(row[col_marca]) else 'GENERICO'
+                codigo = str(row[col_codigo]).strip() if col_codigo and pd.notna(row[col_codigo]) else 'S/C'
+                unidad = str(row[col_unidad]).strip().upper() if col_unidad and pd.notna(row[col_unidad]) else 'KG'
 
-            kg = detectar_info_basica(nombre_full, codigo)
-            
-            # Aquí extrae "" si no está en la lista estricta
-            proveedor = detectar_proveedor_exacto(nombre_full)
-            
-            nombre_upper = nombre_full.upper()
-            nombre_base = re.sub(r'\s*X?\s*\d+\.?\d*\s*(KG|G|L|LT|GALON|ML)\s*$', '', nombre_upper).strip()
+                kg = detectar_info_basica(nombre_full, codigo)
+                proveedor = detectar_proveedor_exacto(nombre_full)
+                nombre_upper = nombre_full.upper()
+                nombre_base = re.sub(r'\s*X?\s*\d+\.?\d*\s*(KG|G|L|LT|GALON|ML)\s*$', '', nombre_upper).strip()
 
-            regla_maestra = reglas_excel.get(nombre_upper, reglas_excel.get(nombre_base))
-            costo_base_usd = 0.0
-            if regla_maestra and regla_maestra['costo_manual'] > 0: costo_base_usd = regla_maestra['costo_manual'] * 1.05 
-            else: costo_base_usd = pd.to_numeric(row[col_costo], errors='coerce') or 0.0
+                costo_base_usd = pd.to_numeric(row[col_costo], errors='coerce') or 0.0
+                
+                if nombre_base not in info_base: info_base[nombre_base] = {'variantes': [], 'costo_base': 0.0}
+                info_base[nombre_base]['variantes'].append({'kg': kg, 'codigo': codigo, 'categoria': categoria, 'marca': marca, 'unidad': unidad})
+                if costo_base_usd > 0.0001: info_base[nombre_base]['costo_base'] = costo_base_usd
 
-            temp_data.append({
-                'nombre': nombre_full, 'categoria': categoria, 'marca': marca, 'codigo': codigo,
-                'unidad_tipo': unidad, 'costo_usd': costo_base_usd, 'kg': kg, 'proveedor': proveedor
-            })
-            if costo_base_usd > 0.0001: precios_maestros[nombre_base] = costo_base_usd
+                regla_maestra = reglas_excel.get(nombre_upper, reglas_excel.get(nombre_base))
+                costo_adicional = regla_maestra['costo_adicional'] if regla_maestra else 0.0
+                costo_final = costo_base_usd + costo_adicional
 
+                temp_data.append({
+                    'nombre': nombre_full, 'categoria': categoria, 'marca': marca, 'codigo': codigo,
+                    'unidad_tipo': unidad, 'costo_usd': costo_final, 'kg': kg, 'proveedor': proveedor,
+                    'costo_odoo_puro': costo_base_usd # Guardamos el costo puro para referencia
+                })
+
+        nombres_odoo = set(item['nombre'].upper() for item in temp_data)
+
+        # 2. INYECTAR NUEVOS PRODUCTOS O VARIANTES DEL EXCEL MAESTRO
+        for nombre_regla, regla in reglas_excel.items():
+            if nombre_regla not in nombres_odoo:
+                kg = detectar_info_basica(nombre_regla)
+                nombre_base = re.sub(r'\s*X?\s*\d+\.?\d*\s*(KG|G|L|LT|GALON|ML)\s*$', '', nombre_regla).strip()
+                if nombre_regla == nombre_base and nombre_base in info_base: continue
+                
+                codigo, categoria, marca, unidad, costo_base_usd = "S/C", "OTROS", "GENERICO", "KG", 0.0
+                
+                if nombre_base in info_base and info_base[nombre_base]['variantes']:
+                    variantes = info_base[nombre_base]['variantes']
+                    var_cercana = min(variantes, key=lambda x: abs(x['kg'] - kg))
+                    codigo, categoria, marca, unidad = var_cercana['codigo'], var_cercana['categoria'], var_cercana['marca'], var_cercana['unidad']
+                    costo_base_usd = info_base[nombre_base]['costo_base']
+
+                costo_final = costo_base_usd + regla['costo_adicional']
+                proveedor = detectar_proveedor_exacto(nombre_regla)
+
+                temp_data.append({
+                    'nombre': nombre_regla, 'categoria': categoria, 'marca': marca, 'codigo': codigo,
+                    'unidad_tipo': unidad, 'costo_usd': costo_final, 'kg': kg, 'proveedor': proveedor,
+                    'costo_odoo_puro': costo_base_usd
+                })
+
+        # 3. CÁLCULO FINAL MATEMÁTICO
         resultados = []
         for item in temp_data:
             nombre = item['nombre']
             nombre_u = nombre.upper()
             kg = item['kg']
-            costo = item['costo_usd']
+            costo_actual = item['costo_usd'] # Este es el costo base de Odoo + Fab
             nombre_base = re.sub(r'\s*X?\s*\d+\.?\d*\s*(KG|G|L|LT|GALON|ML)\s*$', '', nombre_u).strip()
 
-            if costo <= 0.0001:
-                if nombre_base in precios_maestros: costo = precios_maestros[nombre_base]
-                else: continue
+            if costo_actual <= 0.0001:
+                if nombre_base in info_base and info_base[nombre_base]['costo_base'] > 0: 
+                    r_aux = reglas_excel.get(nombre_u, reglas_excel.get(nombre_base))
+                    add_cost = r_aux.get('costo_adicional', 0.0) if r_aux else 0.0
+                    costo_actual = info_base[nombre_base]['costo_base'] + add_cost
+                elif nombre_u in reglas_excel or nombre_base in reglas_excel:
+                    pass
+                elif nombre in db_manual and 'costo_coyuntural' in db_manual[nombre]:
+                    pass
+                else:
+                    continue
+
+            # --- LÓGICA DE COSTO COYUNTURAL ---
+            costo_coyuntural = 0.0
+            costo_para_calculo = costo_actual
+
+            if nombre in db_manual and 'costo_coyuntural' in db_manual[nombre]:
+                if db_manual[nombre]['costo_coyuntural'] > 0:
+                    costo_coyuntural = db_manual[nombre]['costo_coyuntural']
+                    costo_para_calculo = costo_coyuntural # Reemplaza al actual para el calculo final
 
             regla_encontrada = reglas_excel.get(nombre_u, reglas_excel.get(nombre_base, {
-                "margen": MARGEN_DEFECTO, "envase": "", "cod_flete": "FLETE LIM-AQP/TRUJ X KG", "peligroso": False
+                "margen": MARGEN_DEFECTO, "envase": 0.0, "cod_flete": "FLETE LIM-AQP/TRUJ X KG", "peligroso": False
             }))
             regla = dict(regla_encontrada) 
             if nombre in db_manual and 'margen' in db_manual[nombre]: regla['margen'] = db_manual[nombre]['margen']
 
             costo_envase_unit = 0.0
-            etiq = regla['envase']
-            if etiq in TARIFAS_ENVASE: costo_envase_unit = TARIFAS_ENVASE[etiq] / kg
+            if regla['envase'] > 0: 
+                costo_envase_unit = regla['envase'] / kg
             else:
                 if kg == 1: costo_envase_unit = COSTO_ENVASE_STD_1KG / 1
                 elif kg == 5: costo_envase_unit = COSTO_ENVASE_STD_5KG / 5
 
-            costo_op = costo + costo_envase_unit
+            costo_op = costo_para_calculo + costo_envase_unit
             precio_lima = costo_op * (1 + regla['margen'])
             
             flete_base = TARIFAS_FLETE.get(regla['cod_flete'], 0.08) 
@@ -790,8 +832,10 @@ def procesar_excel():
                 "nombre": nombre, "categoria": item['categoria'], "marca": item['marca'],
                 "codigo": item['codigo'], "unidad_tipo": item['unidad_tipo'], "proveedor": item['proveedor'],
                 "margen": f"{round(regla['margen']*100, 1)}", "precio_lima": round(precio_lima, 2),
-                "precio_aqp": round(precio_prov, 2), "precio_tru": round(precio_prov, 2),
-                "presentacion": kg, "flete_status": "NO" if regla['cod_flete'] == "NINGUNO" else "SI"
+                "precio_provincia": round(precio_prov, 2),
+                "presentacion": kg, "flete_status": "NO" if regla['cod_flete'] == "NINGUNO" else "SI",
+                "costo_oculto": costo_op, "flete_oculto": flete_base, 
+                "costo_actual": costo_actual, "costo_coyuntural": costo_coyuntural
             })
 
         unicos = {}
@@ -804,12 +848,13 @@ def procesar_excel():
             re.sub(r'\s*X?\s*\d+\.?\d*\s*(KG|G|L|LT|GALON|ML)\s*$', '', x['nombre'].upper()).strip(), -x['presentacion']
         ))
         return lista_final
-    except Exception as e: return []
+    except Exception as e: 
+        print(f"Error procesando datos: {e}")
+        return []
 
 def actualizar_cache():
     global CACHE_PRODUCTOS
     CACHE_PRODUCTOS = procesar_excel()
-    print(f"🔄 Caché actualizado. Productos cargados en RAM: {len(CACHE_PRODUCTOS)}")
 
 actualizar_cache()
 
@@ -821,18 +866,28 @@ def buscar():
     q = request.args.get('q', '').upper().strip()
     if not q: return jsonify(CACHE_PRODUCTOS)
     palabras = q.split()
-    res = [p for p in CACHE_PRODUCTOS if all(pal in p['nombre'].upper() for pal in palabras)]
+    
+    res = []
+    for p in CACHE_PRODUCTOS:
+        nombre_match = all(pal in p['nombre'].upper() for pal in palabras)
+        codigo_match = all(pal in p['codigo'].upper() for pal in palabras)
+        if nombre_match or codigo_match:
+            res.append(p)
+            
     return jsonify(res)
 
-@app.route('/subir-precios', methods=['POST'])
-def subir_precios():
+@app.route('/subir-precios/<empresa>', methods=['POST'])
+def subir_precios(empresa):
+    if request.form.get('token') != ADMIN_SECRET: return jsonify({"error": "No autorizado"}), 403
     f = request.files['archivo']
-    f.save(FILE_PRECIOS)
+    if empresa == 'linros': f.save(FILE_PRECIOS_LINROS)
+    elif empresa == 'interinsumo': f.save(FILE_PRECIOS_INTERINSUMO)
     actualizar_cache() 
-    return jsonify({"mensaje": "✅ Costos Odoo actualizados"})
+    return jsonify({"mensaje": f"✅ Costos Odoo ({empresa.upper()}) actualizados"})
 
 @app.route('/subir-reglas', methods=['POST'])
 def subir_reglas():
+    if request.form.get('token') != ADMIN_SECRET: return jsonify({"error": "No autorizado"}), 403
     f = request.files['archivo']
     f.save(FILE_REGLAS)
     actualizar_cache() 
@@ -841,7 +896,28 @@ def subir_reglas():
 @app.route('/api/editar-margen', methods=['POST'])
 def editar_margen():
     d = request.json
+    if d.get('token') != ADMIN_SECRET: return jsonify({"error": "No autorizado"}), 403
     guardar_db_manual(d['nombre'], 'margen', float(d['margen'])/100)
+    actualizar_cache() 
+    return jsonify({"success": True})
+
+@app.route('/api/editar-costo-coyuntural', methods=['POST'])
+def editar_costo_coyuntural():
+    d = request.json
+    if d.get('token') != ADMIN_SECRET: return jsonify({"error": "No autorizado"}), 403
+    
+    nuevo_costo = float(d['costo'])
+    datos = cargar_db_manual()
+    
+    # Si le ponen 0, borramos la regla coyuntural
+    if nuevo_costo <= 0:
+        if d['nombre'] in datos and 'costo_coyuntural' in datos[d['nombre']]:
+            del datos[d['nombre']]['costo_coyuntural']
+            with open(FILE_DB_MANUAL, 'w', encoding='utf-8') as f:
+                json.dump(datos, f, ensure_ascii=False, indent=4)
+    else:
+        guardar_db_manual(d['nombre'], 'costo_coyuntural', nuevo_costo)
+        
     actualizar_cache() 
     return jsonify({"success": True})
 

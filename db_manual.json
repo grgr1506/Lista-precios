@@ -1,0 +1,49 @@
+{
+    "BENZOATO DE SODIO TENGLONG X 25kg": {
+        "margen": 0.1
+    },
+    "BENZOATO DE SODIO TENGLONG X 5Kg": {
+        "margen": 0.5
+    },
+    "ACESULFAME K JINHE X 25kg": {
+        "margen": 0.2
+    },
+    "ACIDO ASCORBICO LUWEI X 25kg": {
+        "margen": 0.1
+    },
+    "MALTODEXTRINA DE10-12 XIWANG X 25kg": {},
+    "ACIDO FUMARICO HWS YANTAI HENGYUAN BIOENGINEERING X 25kg": {
+        "margen": 0.15
+    },
+    "SACARINA SODICA 20-40 HUGESTONE X 25kg": {
+        "margen": 0.2
+    },
+    "SACARINA SODICA 40-80 YUNSHENG X 25kg": {
+        "margen": 0.1
+    },
+    "SORBATO DE POTASIO KUNDA X 25kg": {
+        "margen": 0.1
+    },
+    "GLUCOSA LIQUIDA 82% LUZHOU X 300kg": {
+        "margen": 0.09,
+        "costo_coyuntural": 0.58
+    },
+    "SABOR DURAZNO PD67146 CRAMER X 10kg": {
+        "margen": 0.2
+    },
+    "SABOR PIÑA PP263946 CRAMER X 10kg": {
+        "margen": 0.466
+    },
+    "SABOR NARANJA PN221246 CRAMER X 10kg": {
+        "margen": 0.14
+    },
+    "SABOR FRESA PF139146 CRAMER X 10kg": {
+        "margen": 0.5
+    },
+    "SABOR FRESA PF479846 CRAMER X 10kg": {
+        "margen": 0.5
+    },
+    "SABOR CHICHA MORADA PC270846 CRAMER X 10kg": {
+        "margen": 0.5
+    }
+}

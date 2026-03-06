@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>GLI | Lista de Precios</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,73 +18,146 @@
         .bg-brand { background-color: var(--primary-color) !important; color: white; }
         .btn-outline-brand { color: var(--primary-color); border: 2px solid var(--primary-color); background: transparent; }
         .btn-outline-brand:hover { background: var(--primary-color); color: white; }
-        .navbar { background-color: var(--white-pure); box-shadow: 0 2px 10px rgba(82, 78, 156, 0.08); padding: 1rem 0; }
-        .brand-logo { font-weight: 800; font-size: 1.5rem; color: var(--primary-color); letter-spacing: -0.5px; }
-        .brand-subtitle { font-size: 0.75rem; color: var(--text-light); font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; }
+        .btn-config-lock { color: #4b5563; border: 2px solid #e5e7eb; background: var(--white-pure); transition: 0.3s; }
+        .btn-config-lock:hover { background: #e5e7eb; color: #1f2937; }
+        .navbar { background-color: var(--white-pure); box-shadow: 0 2px 10px rgba(82, 78, 156, 0.08); padding: 0.8rem 0; }
+        .brand-logo { font-weight: 800; font-size: 1.5rem; color: var(--primary-color); letter-spacing: -0.5px; line-height: 1; }
+        .brand-subtitle { font-size: 0.7rem; color: var(--text-light); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+        
         .card-pro { background: var(--white-pure); border: none; border-radius: 12px; box-shadow: 0 4px 15px rgba(82, 78, 156, 0.05); transition: all 0.3s ease; }
-        .upload-box { border: 2px dashed #e5e7eb; border-radius: 12px; padding: 2rem; text-align: center; transition: 0.2s; cursor: pointer; background: var(--white-pure); }
+        .upload-box { border: 2px dashed #e5e7eb; border-radius: 12px; padding: 1.5rem; text-align: center; transition: 0.2s; cursor: pointer; background: var(--white-pure); height: 100%; }
         .upload-box:hover { border-color: var(--accent-color); background-color: rgba(82, 78, 156, 0.02); }
-        .search-container { position: relative; max-width: 700px; margin: 0 auto; }
-        .search-input { border: 1px solid #e5e7eb; border-radius: 50px; padding: 1.2rem 1.5rem 1.2rem 3.5rem; font-size: 1.1rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); transition: all 0.2s; background: var(--white-pure); }
+        
+        .search-container { position: relative; max-width: 700px; margin: 0 auto; width: 100%; }
+        .search-input { border: 1px solid #e5e7eb; border-radius: 50px; padding: 1.2rem 1.5rem 1.2rem 3.5rem; font-size: 1.05rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); transition: all 0.2s; background: var(--white-pure); width: 100%; }
         .search-input:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 4px rgba(82, 78, 156, 0.15); }
-        .search-icon { position: absolute; left: 25px; top: 50%; transform: translateY(-50%); color: var(--primary-color); font-size: 1.3rem; }
+        .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--primary-color); font-size: 1.3rem; }
+        
         .table-container { border-radius: 12px; overflow: hidden; background: var(--white-pure); box-shadow: 0 10px 30px rgba(82, 78, 156, 0.06); }
-        .table-pro thead { background-color: var(--primary-color); }
-        .table-pro th { color: white; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; border: none; padding: 1.2rem 1.5rem; }
+        
+        /* AQUI ESTÁ LA MAGIA PARA LOS NOMBRES DE LAS COLUMNAS */
+        .table-pro thead { background-color: #f8f9fa; border-bottom: 2px solid #e5e7eb; }
+        .table-pro th { color: #524e9c; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; border: none; padding: 1.2rem 1.5rem; vertical-align: middle; }
         .table-pro td { padding: 1.25rem 1.5rem; vertical-align: middle; border-bottom: 1px solid #f0f0f5; color: var(--text-dark); font-size: 0.95rem; }
-        .price-tag { font-family: 'Inter', sans-serif; font-weight: 700; color: var(--primary-color); font-size: 1.15rem; }
+        
+        .price-tag { font-family: 'Inter', sans-serif; font-weight: 700; color: var(--primary-color); font-size: 1.15rem; transition: 0.3s; }
         .price-secondary { color: #6b7280; font-weight: 600; }
-        .btn-edit-margen { background: rgba(82, 78, 156, 0.08); color: var(--primary-color); border: 1px solid rgba(82, 78, 156, 0.2); padding: 5px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; transition: 0.2s; cursor: pointer; }
+        
+        .btn-edit-margen { background: rgba(82, 78, 156, 0.08); color: var(--primary-color); border: 1px solid rgba(82, 78, 156, 0.2); padding: 6px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; transition: 0.2s; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
         .btn-edit-margen:hover { background: var(--primary-color); color: white; border-color: var(--primary-color); }
-        .badge-mode { background: rgba(82, 78, 156, 0.1); color: var(--primary-color); padding: 6px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; border: 1px solid rgba(82, 78, 156, 0.2); }
+        .btn-edit-simulated { background: #fff3cd; color: #856404; border-color: #ffeeba; }
+        
+        .badge-mode { background: rgba(82, 78, 156, 0.1); color: var(--primary-color); padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; border: 1px solid rgba(82, 78, 156, 0.2); display: flex; align-items: center; }
         .sede-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; opacity: 0.7; }
+        .admin-indicator { display: none; color: #ef4444; font-weight: 800; font-size: 0.8rem; border: 1px solid #fca5a5; padding: 4px 10px; border-radius: 20px; background: #fef2f2; align-items: center; }
+        
+        .badges-wrapper { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .badge-custom { font-size: 0.7rem; padding: 4px 8px; border-radius: 6px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+        
+        .row-coyuntural td { background-color: #fff1f2 !important; }
+        .row-coyuntural td:first-child { border-left: 4px solid #f43f5e !important; }
+
+        .btn-coyuntural-active { background-color: #f43f5e; color: white; border-color: #f43f5e; }
+        .btn-coyuntural-inactive { background-color: #ffffff; color: #4b5563; border-color: #d1d5db; }
+        .btn-coyuntural-inactive:hover { background-color: #e5e7eb; color: #1f2937; }
+
+        .admin-col { display: none; }
+        body.admin-mode .admin-col { display: table-cell; }
+        
+        @media (max-width: 768px) {
+            body.admin-mode .admin-col { display: flex; }
+            
+            .navbar .container { padding: 0 10px; }
+            .brand-logo { font-size: 1.2rem; }
+            .brand-subtitle { font-size: 0.65rem; }
+            
+            .mobile-hide-text { display: none !important; }
+            .btn-config-lock { padding: 6px 12px !important; }
+            
+            .table-container { background: transparent; box-shadow: none; border-radius: 0; }
+            .table-pro thead { display: none; } 
+            .table-pro tbody { display: flex; flex-direction: column; gap: 15px; }
+            .table-pro tr { display: flex; flex-direction: column; background: var(--white-pure); border-radius: 12px; box-shadow: 0 4px 15px rgba(82, 78, 156, 0.08); border: 1px solid #e5e7eb; overflow: hidden; padding: 0; border-left: 4px solid transparent; }
+            
+            .table-pro td { padding: 12px 15px !important; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f3f4f6 !important; text-align: right; }
+            .table-pro td:last-child { border-bottom: none !important; background-color: #fafafa; }
+            
+            .row-coyuntural { border-left: 4px solid #f43f5e !important; }
+            
+            .table-pro td:nth-child(1) { flex-direction: column; align-items: flex-start; text-align: left; border-bottom: 2px solid #f0f0f5 !important; }
+            
+            /* Títulos en celular ahora son morados también */
+            .table-pro td::before { content: attr(data-label); font-weight: 700; color: #524e9c; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+            .table-pro td:nth-child(1)::before { display: none; } 
+            
+            .table-pro td > div { display: flex; flex-direction: row-reverse; gap: 8px; align-items: baseline; }
+            .table-pro td:nth-child(1) > div { flex-direction: column; width: 100%; }
+            .sede-label { font-size: 0.75rem; }
+            
+            .search-input { padding: 1rem 1.2rem 1rem 3rem; font-size: 1rem; }
+            .search-icon { left: 15px; }
+        }
     </style>
 </head>
 <body>
 
 <nav class="navbar sticky-top">
     <div class="container d-flex justify-content-between align-items-center">
-        <div class="d-flex align-items-center gap-3">
-            <div class="bg-brand rounded-3 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
-                <i class="bi bi-box-seam fs-4"></i>
+        <div class="d-flex align-items-center gap-2 gap-md-3">
+            <div class="bg-brand rounded-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                <i class="bi bi-box-seam fs-5"></i>
             </div>
             <div style="line-height: 1.1;">
                 <div class="brand-logo">GLI</div>
-                <div class="brand-subtitle">Lista de Precios</div>
+                <div class="brand-subtitle">Precios</div>
             </div>
         </div>
 
-        <div class="d-flex gap-3 align-items-center">
-            <span class="badge-mode"><i class="bi bi-currency-dollar me-1"></i> Precios en USD</span>
-            <button class="btn btn-outline-brand rounded-pill px-4 fw-bold" onclick="toggleAdmin()">
-                <i class="bi bi-gear-fill me-2"></i>Configurar Data
+        <div class="d-flex gap-2 gap-md-3 align-items-center">
+            <span id="badgeAdmin" class="admin-indicator"><i class="bi bi-unlock-fill me-1"></i> <span class="mobile-hide-text">ADMIN</span></span>
+            
+            <span class="badge-mode" title="Todos los precios en Dólares">
+                <i class="bi bi-currency-dollar"></i> <span class="mobile-hide-text ms-1">USD</span>
+            </span>
+            
+            <button id="btnConfig" class="btn btn-config-lock rounded-pill px-4 fw-bold" onclick="solicitarAccesoAdmin()" title="Panel de Administrador">
+                <i class="bi bi-lock-fill" id="iconLock"></i> <span class="mobile-hide-text ms-1">Data</span>
             </button>
         </div>
     </div>
 </nav>
 
-<div class="container py-5">
-    <div id="adminPanel" class="mb-5" style="display:none;">
-        <div class="card-pro p-4 border-top border-4 border-brand">
-            <div class="d-flex justify-content-between mb-4">
-                <h5 class="fw-bold text-dark"><i class="bi bi-sliders me-2 text-brand"></i>Panel de Configuración</h5>
-                <button class="btn-close" onclick="toggleAdmin()"></button>
+<div class="container py-4 py-md-5">
+    
+    <div id="adminPanel" class="mb-4 mb-md-5" style="display:none;">
+        <div class="card-pro p-3 p-md-4 border-top border-4 border-danger">
+            <div class="d-flex justify-content-between mb-3 mb-md-4 align-items-center">
+                <h6 class="fw-bold text-danger m-0"><i class="bi bi-shield-lock-fill me-2"></i>Panel Admin</h6>
+                <button class="btn-close" onclick="cerrarPanel()"></button>
             </div>
             
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <div class="upload-box" onclick="document.getElementById('fileCostos').click()">
-                        <div class="mb-3 text-brand"><i class="bi bi-database-check fs-1"></i></div>
-                        <h6 class="fw-bold">1. Subir Costos Base ($)</h6>
-                        <p class="text-muted small mb-0">Importar Archivo exportado de Odoo</p>
-                        <input type="file" id="fileCostos" class="d-none" accept=".xlsx, .csv" onchange="subirArchivo('subir-precios', 'fileCostos')">
+            <div class="row g-2 g-md-3">
+                <div class="col-12 col-md-4">
+                    <div class="upload-box" onclick="document.getElementById('fileLinros').click()">
+                        <div class="mb-1 text-primary"><i class="bi bi-box-seam fs-3"></i></div>
+                        <h6 class="fw-bold mb-0" style="font-size: 0.9rem;">Odoo Linros</h6>
+                        <p class="text-muted small mb-0" style="font-size: 0.7rem;">Archivo .xlsx</p>
+                        <input type="file" id="fileLinros" class="d-none" accept=".xlsx, .csv" onchange="subirArchivo('subir-precios/linros', 'fileLinros')">
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-12 col-md-4">
+                    <div class="upload-box" onclick="document.getElementById('fileInter').click()">
+                        <div class="mb-1 text-info"><i class="bi bi-buildings fs-3"></i></div>
+                        <h6 class="fw-bold mb-0" style="font-size: 0.9rem;">Odoo Interinsumo</h6>
+                        <p class="text-muted small mb-0" style="font-size: 0.7rem;">Archivo .xlsx</p>
+                        <input type="file" id="fileInter" class="d-none" accept=".xlsx, .csv" onchange="subirArchivo('subir-precios/interinsumo', 'fileInter')">
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
                     <div class="upload-box" onclick="document.getElementById('fileReglas').click()">
-                        <div class="mb-3 text-warning"><i class="bi bi-file-earmark-spreadsheet fs-1"></i></div>
-                        <h6 class="fw-bold">2. Subir Reglas Maestras</h6>
-                        <p class="text-muted small mb-0">Importar Excel de Márgenes y Excepciones</p>
+                        <div class="mb-1 text-warning"><i class="bi bi-file-earmark-spreadsheet fs-3"></i></div>
+                        <h6 class="fw-bold mb-0" style="font-size: 0.9rem;">Reglas Maestras</h6>
+                        <p class="text-muted small mb-0" style="font-size: 0.7rem;">Márgenes y Excepciones</p>
                         <input type="file" id="fileReglas" class="d-none" accept=".xlsx, .csv" onchange="subirArchivo('subir-reglas', 'fileReglas')">
                     </div>
                 </div>
@@ -93,55 +166,86 @@
         </div>
     </div>
 
-    <div class="text-center mb-5 mt-3">
-        <h2 class="fw-bold mb-4 text-dark" style="letter-spacing: -0.5px;">Búsqueda Inteligente</h2>
-        <div class="search-container">
+    <div class="text-center mb-4 mb-md-5 mt-2">
+        <h3 class="fw-bold mb-3 text-dark d-none d-md-block" style="letter-spacing: -0.5px;">Búsqueda</h3>
+        <div class="search-container px-2 px-md-0">
             <i class="bi bi-search search-icon"></i>
-            <input type="text" id="txtBuscar" class="form-control search-input" placeholder="Escribe el nombre de un insumo, proveedor o código..." onkeyup="buscar()">
+            <input type="text" id="txtBuscar" class="form-control search-input" placeholder="Buscar producto, código o proveedor..." onkeyup="buscar()">
         </div>
+        <p class="text-muted mt-2 mb-0" style="font-size: 0.75rem;">💡 Tip: Clic en el porcentaje para <b class="text-warning">simular precios</b>.</p>
     </div>
 
     <div class="table-container shadow-sm">
         <table class="table table-pro mb-0 w-100">
             <thead>
                 <tr>
-                    <th style="width: 45%; padding-left: 2rem;">Producto Detallado</th>
-                    <th class="text-center">Margen</th>
-                    <th class="text-end">Precio Lima</th>
-                    <th class="text-end">Precio Arequipa</th>
-                    <th class="text-end" style="padding-right: 2rem;">Precio Trujillo</th>
+                    <th style="width: 33%; padding-left: 2rem;">Producto Detallado</th>
+                    <th class="text-center admin-col" style="width: 11%;"><i class="bi bi-clipboard-data"></i> Costo Actual</th>
+                    <th class="text-center admin-col" style="width: 14%;"><i class="bi bi-graph-up-arrow"></i> Costo Coyuntural</th>
+                    <th class="text-center" style="width: 12%;">Margen</th>
+                    <th class="text-end" style="width: 15%;">Precio Lima</th>
+                    <th class="text-end" style="width: 15%; padding-right: 2rem;">AQP/TRU</th>
                 </tr>
             </thead>
             <tbody id="tablaResultados"></tbody>
         </table>
         
         <div id="loading" class="text-center py-5" style="display:none;">
-            <div class="spinner-border text-brand" style="width: 3rem; height: 3rem;"></div>
-            <p class="text-muted mt-3 small fw-bold">Calculando y filtrando productos...</p>
+            <div class="spinner-border text-brand" style="width: 2.5rem; height: 2.5rem;"></div>
+            <p class="text-muted mt-2 small fw-bold">Buscando...</p>
         </div>
     </div>
 </div>
 
 <script>
-    const API = "http://127.0.0.1:5000";
+    const API = "http://127.0.0.1:5000"; 
     let timerBusqueda;
+    let isAdmin = false; 
+    let currentToken = ""; 
 
     document.addEventListener('DOMContentLoaded', () => { ejecutarBusqueda(); });
 
-    function toggleAdmin() { 
-        const panel = document.getElementById('adminPanel');
-        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-        if(panel.style.display === 'block') window.scrollTo({ top: 0, behavior: 'smooth' });
+    function solicitarAccesoAdmin() {
+        if(isAdmin) {
+            let p = document.getElementById('adminPanel');
+            p.style.display = p.style.display === 'none' ? 'block' : 'none';
+            if(p.style.display === 'block') window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+
+        let psw = prompt("🔒 ACCESO RESTRINGIDO\nIngresa la contraseña de administrador para modificar la base de datos:");
+        
+        if(psw === "admin123") {
+            isAdmin = true;
+            currentToken = psw; 
+            
+            document.body.classList.add('admin-mode');
+            
+            document.getElementById('badgeAdmin').style.display = 'inline-flex';
+            let btn = document.getElementById('btnConfig');
+            btn.classList.remove('btn-config-lock');
+            btn.classList.add('btn-outline-danger');
+            document.getElementById('iconLock').classList.replace('bi-lock-fill', 'bi-unlock-fill');
+            
+            document.getElementById('adminPanel').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            ejecutarBusqueda(); 
+        } else if(psw !== null) {
+            alert("❌ Contraseña incorrecta. Solo puedes usar el Simulador de Precios.");
+        }
+    }
+
+    function cerrarPanel() {
+        document.getElementById('adminPanel').style.display = 'none';
     }
 
     function buscar() {
         clearTimeout(timerBusqueda);
         const loader = document.getElementById('loading');
         const tbody = document.getElementById('tablaResultados');
-        
         tbody.innerHTML = ''; 
         loader.style.display = 'block';
-
         timerBusqueda = setTimeout(() => { ejecutarBusqueda(); }, 300);
     }
 
@@ -156,62 +260,75 @@
             loader.style.display = 'none';
 
             if(data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted fw-bold">No encontramos productos que coincidan.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted fw-bold">No encontramos productos.</td></tr>';
                 return;
             }
 
             let htmlContent = '';
             
-            data.forEach(p => {
-                let badgeFlete = p.flete_status === 'NO' ? '<span class="badge text-dark rounded-pill" style="background:#e0f2fe; font-size:0.65rem; border: 1px solid #bae6fd;">FLETE GRATIS</span>' : '';
-                let marca = p.marca && p.marca !== 'NAN' ? p.marca : 'Sin Marca';
-                let codigo = p.codigo && p.codigo !== 'NAN' ? p.codigo : 'S/C';
+            data.forEach((p, index) => {
+                let badgeFlete = p.flete_status === 'NO' ? '<span class="badge-custom" style="background:#e0f2fe; color:#0369a1; border: 1px solid #bae6fd;"><i class="bi bi-truck"></i> Gratis</span>' : '';
                 let categoria = p.categoria && p.categoria !== 'NAN' ? p.categoria : 'Otros';
                 
-                // MAGIA: Solo crea la etiqueta si "proveedor" tiene contenido
+                let badgeCodigo = p.codigo && p.codigo !== 'NAN' && p.codigo !== 'S/C' 
+                    ? `<span class="badge-custom" style="background:#f3f4f6; color:#4b5563; border: 1px solid #e5e7eb;"><i class="bi bi-upc-scan"></i> ${p.codigo}</span>` 
+                    : '';
+
                 let badgeProveedor = '';
                 if (p.proveedor && p.proveedor !== "") {
-                    badgeProveedor = `
-                    <span class="badge" style="background-color: #f1f5f9; color: #334155; border: 1px solid #cbd5e1;">
-                        <i class="bi bi-building"></i> ${p.proveedor}
-                    </span>`;
+                    badgeProveedor = `<span class="badge-custom" style="background-color: #f1f5f9; color: #334155; border: 1px solid #cbd5e1;"><i class="bi bi-building"></i> ${p.proveedor}</span>`;
                 }
 
+                let hasCoyuntural = p.costo_coyuntural > 0;
+                let rowClass = hasCoyuntural ? 'row-coyuntural' : '';
+                
+                let textCoyuntural = hasCoyuntural ? `$${p.costo_coyuntural.toFixed(2)}` : `$${p.costo_actual.toFixed(2)}`;
+                let btnCoyunturalClass = hasCoyuntural ? 'btn-coyuntural-active' : 'btn-coyuntural-inactive';
+
+                let rowId = `row_${index}`;
+
                 htmlContent += `
-                <tr>
-                    <td style="padding-left: 2rem;">
-                        <div class="fw-bold text-dark" style="font-size: 1.05rem;">${p.nombre}</div>
-                        <div class="d-flex align-items-center mt-2 flex-wrap gap-2">
+                <tr id="${rowId}" class="${rowClass}">
+                    <td data-label="Producto" class="ps-md-4">
+                        <div class="fw-bold text-dark d-md-flex align-items-md-center" style="font-size: 1.05rem; line-height: 1.2;">
+                            ${p.nombre}
+                        </div>
+                        <div class="badges-wrapper">
                             ${badgeProveedor}
-                            <span class="badge" style="background-color: rgba(82, 78, 156, 0.1); color: var(--primary-color); border: 1px solid var(--primary-color);">
-                                <i class="bi bi-folder2-open"></i> ${categoria}
-                            </span>
-                            
-                            <span class="badge bg-light text-secondary border"><i class="bi bi-upc-scan"></i> ${codigo}</span>
-                            <span class="badge bg-light text-secondary border"><i class="bi bi-box-seam"></i> ${p.presentacion} ${p.unidad_tipo}</span>
+                            <span class="badge-custom" style="background-color: rgba(82, 78, 156, 0.1); color: var(--primary-color); border: 1px solid rgba(82, 78, 156, 0.3);"><i class="bi bi-folder2-open"></i> ${categoria}</span>
+                            ${badgeCodigo}
                             ${badgeFlete}
                         </div>
                     </td>
                     
-                    <td class="text-center">
-                        <button class="btn-edit-margen" onclick="editarMargen('${p.nombre}', '${p.margen}')" title="Clic para editar margen de ganancia">
-                            ${p.margen}% <i class="bi bi-pencil-fill ms-1" style="font-size: 0.7rem;"></i>
+                    <td data-label="Costo Actual" class="text-md-center admin-col">
+                        <div class="fw-bold text-secondary" style="font-size: 0.95rem;">$${p.costo_actual.toFixed(2)}</div>
+                    </td>
+
+                    <td data-label="Costo Coyuntural" class="text-md-center admin-col">
+                        <button class="btn btn-sm ${btnCoyunturalClass}" style="font-size: 0.85rem; border-radius: 8px; font-weight: bold; border-width: 1px; border-style: solid; padding: 4px 10px;" onclick="editarCostoCoyuntural('${p.nombre}', ${p.costo_actual}, ${p.costo_coyuntural})" title="Clic para fijar costo coyuntural">
+                            <i class="bi bi-graph-up-arrow me-1"></i> ${textCoyuntural}
+                        </button>
+                    </td>
+                    
+                    <td data-label="Margen %" class="text-md-center">
+                        <button id="btn_margen_${rowId}" class="btn-edit-margen m-0" onclick="procesarMargen('${rowId}', '${p.nombre}', '${p.margen}', ${p.costo_oculto}, ${p.flete_oculto})">
+                            ${p.margen}% <i class="bi bi-pencil-fill ms-1" style="font-size: 0.65rem;"></i>
                         </button>
                     </td>
 
-                    <td class="text-end">
-                        <div class="price-tag">$ ${p.precio_lima.toFixed(2)}</div>
-                        <div class="text-muted sede-label">LIMA (USD)</div>
+                    <td data-label="Precio Lima" class="text-md-end">
+                        <div>
+                            <div id="precio_lima_${rowId}" class="price-tag">$ ${p.precio_lima.toFixed(2)}</div>
+                            <div class="text-muted sede-label d-none d-md-block">LIMA (USD)</div>
+                        </div>
                     </td>
 
-                    <td class="text-end">
-                        <div class="price-tag price-secondary">$ ${p.precio_aqp.toFixed(2)}</div>
-                        <div class="text-muted sede-label">AREQUIPA (USD)</div>
-                    </td>
-
-                    <td class="text-end" style="padding-right: 2rem;">
-                        <div class="price-tag price-secondary">$ ${p.precio_tru.toFixed(2)}</div>
-                        <div class="text-muted sede-label">TRUJILLO (USD)</div>
+                    <td data-label="Precio Provincia" class="text-md-end pe-md-4">
+                        <div>
+                            <div id="precio_prov_${rowId}" class="price-tag price-secondary">$ ${p.precio_provincia.toFixed(2)}</div>
+                            <div class="text-muted sede-label d-none d-md-block">AQP / TRU (USD)</div>
+                        </div>
                     </td>
                 </tr>`;
             });
@@ -220,30 +337,78 @@
         } catch(e) { loader.style.display = 'none'; }
     }
 
-    async function editarMargen(nombre, val) {
-        let nuevo = prompt(`Editar margen de ganancia para:\n${nombre}\n\nIngresa el porcentaje (ej: 25):`, val);
-        if(nuevo && !isNaN(nuevo)) {
-            await fetch(`${API}/api/editar-margen`, {
+    async function procesarMargen(rowId, nombre, valActual, costoOculto, fleteOculto) {
+        let mensaje = isAdmin ? 
+            `🛠️ MODO ADMINISTRADOR\nCambio PERMANENTE de margen.\n\nNuevo margen % para:\n${nombre}` :
+            `📊 MODO SIMULADOR\nSimulación temporal de precios.\n\nSimular margen % para:\n${nombre}`;
+
+        let nuevoStr = prompt(mensaje, valActual);
+        
+        if(nuevoStr && !isNaN(nuevoStr)) {
+            if(isAdmin) {
+                let res = await fetch(`${API}/api/editar-margen`, {
+                    method:'POST', headers:{'Content-Type':'application/json'},
+                    body: JSON.stringify({nombre: nombre, margen: nuevoStr, token: currentToken})
+                });
+                if(res.status === 403) alert("❌ Error de seguridad.");
+                else ejecutarBusqueda(); 
+            } else {
+                let nuevoMargenDecimal = parseFloat(nuevoStr) / 100;
+                let simulacionLima = costoOculto * (1 + nuevoMargenDecimal);
+                let simulacionProv = simulacionLima + fleteOculto;
+
+                let btn = document.getElementById(`btn_margen_${rowId}`);
+                btn.innerHTML = `${nuevoStr}% <i class="bi bi-calculator ms-1"></i>`;
+                btn.classList.add('btn-edit-simulated');
+
+                let divLima = document.getElementById(`precio_lima_${rowId}`);
+                divLima.innerHTML = `$ ${simulacionLima.toFixed(2)}`;
+                divLima.style.color = '#d97706'; 
+
+                let divProv = document.getElementById(`precio_prov_${rowId}`);
+                divProv.innerHTML = `$ ${simulacionProv.toFixed(2)}`;
+                divProv.style.color = '#d97706'; 
+            }
+        }
+    }
+
+    async function editarCostoCoyuntural(nombre, costoActual, costoCoyunturalActual) {
+        let valorSugerido = costoCoyunturalActual > 0 ? costoCoyunturalActual : costoActual;
+        
+        let mensaje = `🚨 COSTO COYUNTURAL (ADMIN)\nVas a sobreescribir el costo base por una coyuntura del mercado.\n\nCosto Odoo/Actual: $${costoActual.toFixed(2)}\n\nIngresa el nuevo costo USD para:\n${nombre}\n\n(Para borrarlo y volver a la normalidad, ingresa 0)`;
+        
+        let nuevoStr = prompt(mensaje, valorSugerido);
+        
+        if(nuevoStr !== null && !isNaN(nuevoStr)) {
+            let res = await fetch(`${API}/api/editar-costo-coyuntural`, {
                 method:'POST', headers:{'Content-Type':'application/json'},
-                body: JSON.stringify({nombre: nombre, margen: nuevo})
+                body: JSON.stringify({nombre: nombre, costo: nuevoStr, token: currentToken})
             });
-            ejecutarBusqueda(); 
+            if(res.status === 403) alert("❌ Error de seguridad.");
+            else ejecutarBusqueda(); 
         }
     }
 
     async function subirArchivo(endpoint, id) {
         let input = document.getElementById(id);
         if(!input.files[0]) return;
+        
         let fd = new FormData(); 
         fd.append('archivo', input.files[0]);
-        document.getElementById('status').innerText = "Procesando data...";
+        fd.append('token', currentToken); 
+
+        document.getElementById('status').innerText = "Procesando...";
         try {
-            await fetch(`${API}/${endpoint}`, {method:'POST', body:fd});
-            document.getElementById('status').innerText = "✅ Sistema actualizado en memoria";
+            let res = await fetch(`${API}/${endpoint}`, {method:'POST', body:fd});
+            if(res.status === 403) {
+                document.getElementById('status').innerText = "❌ Token inválido";
+                return;
+            }
+            document.getElementById('status').innerText = "✅ Actualizado correctamente";
             setTimeout(() => { document.getElementById('status').innerText=''; }, 3000);
             ejecutarBusqueda();
         } catch(e) {
-            document.getElementById('status').innerText = "❌ Error al subir";
+            document.getElementById('status').innerText = "❌ Error de conexión";
         }
     }
 </script>
